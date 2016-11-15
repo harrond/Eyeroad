@@ -1,4 +1,4 @@
-package com.example.hoyoung.eyeload;
+package com.example.hoyoung.test;
 
 public class BuildingControl {
     //DAO선언

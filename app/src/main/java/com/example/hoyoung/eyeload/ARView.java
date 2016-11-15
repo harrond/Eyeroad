@@ -1,4 +1,4 @@
-package com.example.hoyoung.eyeload;
+package com.example.hoyoung.test;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -30,11 +30,18 @@ public class ARView extends View {
         if (canvas==null) return;
         if (drawing.compareAndSet(false, true)) {
             List<Marker> collection = ARData.getMarkers();
+            List<Marker> path=ARData.getPath();
 
             cache.clear();
             for (Marker m : collection) {
                 m.update(canvas, 0, 0);
                 if (m.isOnRadar()) cache.add(m);
+            }
+            if(path!=null) {
+                for (Marker m : path) { //수정
+                    m.update(canvas, 0, 0);
+                    if (m.isOnRadar()) cache.add(m);
+                }
             }
             collection = cache;
 

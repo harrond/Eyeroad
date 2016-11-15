@@ -1,6 +1,4 @@
-package com.example.hoyoung.eyeload;
-
-import java.text.DecimalFormat;
+package com.example.hoyoung.test;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -8,9 +6,11 @@ import android.graphics.Color;
 import android.location.Location;
 import android.util.Log;
 
+import java.text.DecimalFormat;
+
 public class Marker implements Comparable<Marker> {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("@#");
-        
+
     private static final Vector symbolVector = new Vector(0, 0, 0);
     private static final Vector textVector = new Vector(0, 1, 0);
 
@@ -52,7 +52,7 @@ public class Marker implements Comparable<Marker> {
     private static PaintableBox collisionBox = null;
     private static PaintablePosition collisionPosition = null;
     private Bitmap bitmap=null;
-    private int markerType=0;//0: memo Marker, 1: Building Marker, 2: path Marker
+    private int markerType=0;//0: memo Marker, 1: Building Marker, 2: path Marker 3:destination
 
     public Marker(String name, double latitude, double longitude, double altitude, int color,Bitmap bitmap) {
         set(name, latitude, longitude, altitude, color,bitmap);
@@ -167,14 +167,15 @@ public class Marker implements Comparable<Marker> {
 
 		float range = ARData.getRadius() * 1000;
 		//float scale = range / Radar.RADIUS;
-        float scale = range / 48;
+        float scale = range / 50;//48
 		locationXyzRelativeToPhysicalLocation.get(locationArray);
         float x = locationArray[0] / scale;
         float y = locationArray[2] / scale; // z==y Switched on purpose 
         symbolXyzRelativeToCameraView.get(symbolArray);
-		if ((symbolArray[2] < -1f) && ((x*x+y*y)<(48*48))) {
+		if ((symbolArray[2] < -1f) && ((x*x+y*y)<(50*50))) {
 			isOnRadar = true;
 		}
+
 	}
 
     private synchronized void updateView() {
@@ -280,7 +281,8 @@ public class Marker implements Comparable<Marker> {
         if (debugTouchZone) drawTouchZone(canvas);
         if (debugCollisionZone) drawCollisionZone(canvas);
         drawIcon(canvas);
-        drawText(canvas);
+       // if(markerType!=2)
+            drawText(canvas);
     }
 
     protected synchronized void drawCollisionZone(Canvas canvas) {

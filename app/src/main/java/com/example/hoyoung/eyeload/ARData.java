@@ -1,4 +1,7 @@
-package com.example.hoyoung.eyeload;
+package com.example.hoyoung.test;
+
+import android.location.Location;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,16 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import android.location.Location;
-import android.util.Log;
-
 public abstract class ARData {
     private static final String TAG = "ARData";
 	private static final Map<String,Marker> markerList = new ConcurrentHashMap<String,Marker>();
     private static final List<Marker> cache = new CopyOnWriteArrayList<Marker>();
     private static final AtomicBoolean dirty = new AtomicBoolean(false);
     private static final float[] locationArray = new float[3];
-    
+    private static List<Marker> path = null;
     public static final Location hardFix = new Location("ATL");
     static {
         hardFix.setLatitude(0);
@@ -40,13 +40,16 @@ public abstract class ARData {
     private static float pitch = 0;
     private static final Object rollLock = new Object();
     private static float roll = 0;
-
+    private static boolean pathF=false;
     public static void setZoomLevel(String zoomLevel) {
     	if (zoomLevel==null) throw new NullPointerException();
     	
     	synchronized (ARData.zoomLevel) {
     	    ARData.zoomLevel = zoomLevel;
     	}
+    }
+    public static void tunPathF(){
+        pathF=!pathF;
     }
     
     public static void setZoomProgress(int zoomProgress) {
@@ -60,7 +63,25 @@ public abstract class ARData {
             }
         }
     }
-    
+    public static void addPath(Collection<Marker> lines){
+        if (lines==null) throw new NullPointerException();
+        if (lines.size()<=0) return;
+        path=(List<Marker>)lines;
+      //  if(pathF) {
+            for (Marker marker : path) {
+                marker.calcRelativePosition(ARData.getCurrentLocation());
+            }
+     //   }
+
+    }
+    public static List<Marker> getPath(){
+        for(Marker ma: path){
+            ma.getLocation().get(locationArray);
+            locationArray[1]=ma.getInitialY();
+            ma.getLocation().set(locationArray);
+        }
+        return Collections.unmodifiableList(path);
+    }
     public static void setRadius(float radius) {
         synchronized (ARData.radiusLock) {
             ARData.radius = radius;
@@ -185,6 +206,9 @@ public abstract class ARData {
         Log.d(TAG, "New location, updating markers. location="+location.toString());
         for(Marker ma: markerList.values()) {
             ma.calcRelativePosition(location);
+        }
+        for(Marker marker : path) {
+            marker.calcRelativePosition(location);
         }
 
         if (dirty.compareAndSet(false, true)) {

@@ -1,11 +1,11 @@
-package com.example.hoyoung.eyeload;
+package com.example.hoyoung.test;
 
 public class LowPassFilter {
 
     private static final float ALPHA_DEFAULT = 0.123f;
     private static final float ALPHA_STEADY       = 0.001f;
-    private static final float ALPHA_START_MOVING = 0.1f;
-    private static final float ALPHA_MOVING       = 0.2f;
+    private static final float ALPHA_START_MOVING = 0.15f;
+    private static final float ALPHA_MOVING       = 0.25f;
 
     private LowPassFilter() { }
 

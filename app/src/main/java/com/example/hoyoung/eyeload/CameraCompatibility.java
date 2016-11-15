@@ -1,14 +1,14 @@
-package com.example.hoyoung.eyeload;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
+package com.example.hoyoung.test;
 
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
 import android.view.Display;
 import android.view.WindowManager;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class CameraCompatibility {
 	private static Method getSupportedPreviewSizes = null;

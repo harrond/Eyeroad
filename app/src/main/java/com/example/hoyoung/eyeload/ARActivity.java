@@ -1,25 +1,32 @@
-package com.example.hoyoung.eyeload;
+package com.example.hoyoung.test;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-
-
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.view.View.OnTouchListener;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -36,6 +43,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     private static final String END_TEXT = FORMAT.format(ARActivity.MAX_ZOOM)+" km";
     private static final int END_TEXT_COLOR = Color.WHITE;
 
+    private static List<HashMap<String,Double>> path= null;
     private static PowerManager.WakeLock wakeLock=null;
     private static CameraSurface camScreen=null;
     private static TextView endLabel=null;
@@ -49,10 +57,11 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     public static final float TWENTY_PERCENT = 2f*TEN_PERCENT;
     public static final float EIGHTY_PERCENTY = 4f*TWENTY_PERCENT;
 
-    public static boolean useCollisionDetection = true;
+    public static boolean useCollisionDetection = false;
 
     private static final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(1);
     private static final ThreadPoolExecutor exeService = new ThreadPoolExecutor(1, 1, 20, TimeUnit.SECONDS, queue);
+    private static List<Marker> pathmarkers=null;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -69,8 +78,28 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
                 }
             }
         }*/
+        if(Build.VERSION.SDK_INT>=23) {  //버전확인
+            String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+            int i = 0;
+            int permissionCode = 0;
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+
+                } else {//권한 없음
+                    ActivityCompat.requestPermissions(this, permissions, permissionCode);
+                }
+            }
+        }
 
         super.onCreate(savedInstanceState);
+        bitmap= BitmapFactory.decodeResource(this.getResources(),R.drawable.smaile );
+        Intent intent=getIntent();
+        path=(List<HashMap<String,Double>>)intent.getSerializableExtra("path");
+        if(path!=null){
+            //ARData.tunPathF();
+            createPathMarker();
+            //ARData.tunPathF();
+        }
 
         camScreen = new CameraSurface(this);
         setContentView(camScreen);
@@ -88,7 +117,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "DimScreen");
 
-        bitmap= BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
+       // bitmap= BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);//임시
 
 
     }
@@ -110,6 +139,24 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
 
         wakeLock.release();
     }
+    private void createPathMarker(){
+        pathmarkers =new ArrayList<Marker>();
+        int size = path.size();
+        int i=0;
+
+        Bitmap a= BitmapFactory.decodeResource(this.getResources(),R.drawable.smaile );
+        for(i=0;i<path.size();i++){
+            if(i==size-1){
+                Marker d=new Marker("Destination",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-15f, Color.BLUE,a,3);
+                pathmarkers.add(d);
+                break;
+            }
+            Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-15f, Color.BLUE,a,2);
+            pathmarkers.add(d);
+        }
+
+        ARData.addPath(pathmarkers);
+    }
 
     @Override
     public void onSensorChanged(SensorEvent evt) {
@@ -122,7 +169,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         }
     }
     private static float calcZoomLevel(){ //0m~100km까지 나타내는 것을 100범위로 표현
-        int myZoomLevel = 3;//120m반경
+        int myZoomLevel = 50;//120m반경
         float out = 0;
 
         float percent = 0;
@@ -146,7 +193,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         float zoomLevel=calcZoomLevel();
         ARData.setRadius(zoomLevel);
         ARData.setZoomLevel(FORMAT.format(zoomLevel));
-        ARData.setZoomProgress(3);
+        ARData.setZoomProgress(50);//반경
         Location last = ARData.getCurrentLocation();
         updateData(last.getLatitude(),last.getLongitude(),last.getAltitude());
     }
@@ -192,7 +239,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
 
     private static boolean download( double lat, double lon, double alt){
         //DB에서 다운하는 부분
-        //Bitmap a= BitmapFactory.decodeResource(this.getResources(), );
+
         List<Marker> markers =new ArrayList<Marker>();
         Marker d=new Marker("Lab",37.5583037 ,126.9984677,90, Color.RED, bitmap );
         markers.add(d);
@@ -200,6 +247,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         markers.add(c);
 
         ARData.addMarkers(markers);
+       // ARData.addPath(pathmarkers);
         return true;
     }
 

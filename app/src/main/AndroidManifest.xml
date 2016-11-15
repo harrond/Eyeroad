@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hoyoung.eyeload">
-    <uses-sdk android:minSdkVersion="7" />
+    package="com.example.hoyoung.test">
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-feature android:name="android.hardware.Camera" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_CORSE_LOCATION"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        <activity android:name=".MainActivityHoYoung">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -16,14 +22,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".ARActivity"
-            android:label="@string/app_name"
             android:screenOrientation="landscape">>
         </activity>
+        <activity android:name=".CameraCropActivity"/>
+        <activity android:name=".NoteEdit"/>
+        <activity android:name=".SearchActivity"/>
+        <activity android:name=".Notepadv3"/>
+        <activity android:name=".showMapActivity"></activity>
+        <activity android:name=".TmapAcitivity"></activity>
+        <activity android:name=".TmapActivity2"></activity>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCvoL1boVNpaSNJwPzSvK006EuUrU33weo"/>
     </application>
-    <uses-feature android:name="android.hardware.Camera" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_CORSE_LOCATION"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+
 </manifest>

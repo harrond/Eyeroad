@@ -1,9 +1,10 @@
-package com.example.hoyoung.eyeload;
+package com.example.hoyoung.test;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;
-import android.graphics.Canvas;
-import android.graphics.Color;
 
 public class PaintableBoxedText extends PaintableObject {
     private float width=0, height=0;

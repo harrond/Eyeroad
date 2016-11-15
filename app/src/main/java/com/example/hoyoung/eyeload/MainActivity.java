@@ -1,11 +1,13 @@
-package com.example.hoyoung.eyeload;
+package com.example.hoyoung.test;
+
+
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements  View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +27,15 @@ public class MainActivity extends AppCompatActivity implements  View.OnClickList
                 startActivity(new Intent(this, SearchActivity.class));
                 break;
             case R.id.memoManagementButton:
-                startActivity(new Intent(this, MemoManagementActivity.class));
+                startActivity(new Intent(this, Notepadv3.class));
                 break;
             case R.id.arViewButton:
-                startActivity(new Intent(this, ArViewActivity.class));
+                startActivity(new Intent(this, ARActivity.class));
                 break;
             case R.id.meetingButton:
                 startActivity(new Intent(this, MeetingListActivity.class));
                 break;
         }
     }
+
 }

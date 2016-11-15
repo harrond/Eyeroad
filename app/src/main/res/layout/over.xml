@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toggle"
+        android:textOff="Off"
+        android:textOn="On"
+        />
+    <Button
+        android:id="@+id/btnMemo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="메모 남기기"
+
+        />
+    <Button
+        android:id="@+id/btnMeeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="모임 보기"
+
+        />
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="위치 검색"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="현재 위치:"
+        />
+</LinearLayout>
