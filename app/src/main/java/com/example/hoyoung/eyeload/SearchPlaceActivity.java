@@ -74,6 +74,29 @@ public class SearchPlaceActivity extends Activity implements
         recView.setAdapter(adapter);
         adapter.setItemClickCallback(this);
     }
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if(origin==null)
+        {
+            names[0]="";
+            addresss[0]="";
+            listData=(ArrayList) getListData();
+            adapter=new FindResultAdapter(listData,this);
+            recView.setAdapter(adapter);
+            adapter.setItemClickCallback(this);
+        }
+        if(dest==null)
+        {
+            names[1]="";
+            addresss[1]="";
+            listData=(ArrayList) getListData();
+            adapter=new FindResultAdapter(listData,this);
+            recView.setAdapter(adapter);
+            adapter.setItemClickCallback(this);
+        }
+    }
 
     //리사이클 뷰에서 출발지,목적지 선택시
     @Override
@@ -220,6 +243,7 @@ public class SearchPlaceActivity extends Activity implements
                 Intent intent=new Intent(SearchPlaceActivity.this,ShowMapActivity.class);
                 intent.putExtra("path",path);
                 startActivity(intent);
+
 
 
             }
