@@ -1,24 +1,20 @@
-package kr.soen.mypart;
+package com.example.hoyoung.eyeload;
 
 /**
  * Created by Jin on 2016-10-8.
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-
 /**
  * Created by Jin on 2016-11-5.
  */
@@ -26,24 +22,32 @@ import java.net.URLEncoder;
 public class MakingMeetingActivity extends Activity {
 
     MeetingControl control = MeetingControl.getInstance();
-
+    //private EditText editTextKey;
     private EditText editTextTitle;
     private EditText editTextPlaceName;
     private EditText editTextMeetingInfo;
     private EditText editTextPublisher;
     private EditText editTextPassword;
-
+    private ImageView placeSelect;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_making_meeting);
 
+        setContentView(R.layout.activity_making_meeting);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //editTextKey = (EditText) findViewById(R.id.meetingKey);
         editTextTitle = (EditText) findViewById(R.id.title);
         editTextPlaceName = (EditText) findViewById(R.id.placeName);
         editTextMeetingInfo = (EditText) findViewById(R.id.meetingInfo);
         editTextPublisher = (EditText) findViewById(R.id.publisher);
         editTextPassword = (EditText) findViewById(R.id.password);
+        placeSelect=(ImageView) findViewById(R.id.select_place);
+        placeSelect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                PlaceRadio();
+            }
+
+        });
 
     }
 
@@ -61,7 +65,6 @@ public class MakingMeetingActivity extends Activity {
 
     }
 
-    //Memo를 DB로 보내고 UI에 적용하기 위한 쓰레드
     class InsertMeeting extends AsyncTask<String, Void, Boolean> {
         ProgressDialog loading;
 
@@ -97,5 +100,20 @@ public class MakingMeetingActivity extends Activity {
 
             return control.setInfo(title,placeName,meetingInfo,publisher,password);
         }
+    }
+
+    private void PlaceRadio(){
+        final CharSequence[] Places = {"신공학관", "원흥관", "명진관","정보문화관P동","정보문화관Q동","학술문화관","사회과학관","경영관","다향관","본관"};
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+        alt_bld.setTitle("모임 장소를 선택하세요");
+        alt_bld.setSingleChoiceItems(Places, -1, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(getApplicationContext(), "모임장소 = "+Places[item], Toast.LENGTH_SHORT).show();
+                editTextPlaceName.setText(Places[item]);
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
     }
 }

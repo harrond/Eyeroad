@@ -1,5 +1,4 @@
-package kr.soen.mypart;
-
+package com.example.hoyoung.eyeload;
 import android.os.Build;
 import android.util.Log;
 

@@ -1,4 +1,4 @@
-package kr.soen.mypart;
+package com.example.hoyoung.eyeload;
 
 /**
  * Created by Jin on 2016-11-5.

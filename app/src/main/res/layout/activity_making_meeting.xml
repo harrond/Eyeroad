@@ -1,97 +1,109 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+    android:weightSum="1"
+    android:layout_margin="5dp"
+    android:layout_height="match_parent">
 
-    <!--<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="meetingKey"
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:src="@drawable/meeting_name"
         />
-
-    <EditText
-        android:id="@+id/meetingKey"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="title"
-        />
-
     <EditText
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/text_back"
         />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="placeName"
-        />
-
-    <EditText
-        android:id="@+id/placeName"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="meetingInfo"
+    <ImageView
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/meeting_place"
+            android:id="@+id/select_place"
+        />
+        <EditText
+                android:id="@+id/placeName"
+                android:layout_width="233dp"
+                android:layout_height="32dp"
+                android:hint="장소 버튼을 누르세요"
+            android:layout_margin="5dp"
+                android:background="@drawable/text_back"
+            />
+    </LinearLayout>
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:src="@drawable/meeting_content"
         />
 
     <EditText
         android:id="@+id/meetingInfo"
+        android:layout_width="350dp"
+        android:layout_height="166dp"
+        android:scrollbars="vertical"
+        android:gravity="top"
+        android:layout_margin="5dp"
+        android:background="@drawable/text_back"
+        android:layout_gravity="center"
+        />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="publisher"
-        />
-
-    <EditText
-        android:id="@+id/publisher"
+        android:layout_height="55dp"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:src="@drawable/meeting_publisher"
+            />
+        <EditText
+            android:id="@+id/publisher"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/text_back"
+            />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="password"
-        />
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="55dp"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:src="@drawable/meeting_password"
+            />
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:inputType="textPassword"
+            android:background="@drawable/text_back"
+            />
+    </LinearLayout>
 
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:onClick="insert"
-        android:text="Insert"
-        />
-
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/save"
         />
 </LinearLayout>
+    </ScrollView>

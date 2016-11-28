@@ -1,28 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_meeting_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="kr.soen.mypart.MeetingInfoActivity">
+    android:orientation="vertical"
+    android:weightSum="1">
 
-    <TextView android:textSize="20dp"
-        android:id="@+id/meetingInfoTextView"
-        android:textStyle="bold"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/meeting_name"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="delete"
-        android:onClick="insert"
-        android:id="@+id/meetingInfoDelete"
-        android:layout_below="@+id/meetingInfoTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="32dp" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/meeting_name"
+            android:layout_width="230dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/text_back"
+            android:layout_height="match_parent"
+            android:layout_weight="0.59" />
+    </LinearLayout>
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:src="@drawable/meeting_content"/>
+
+    <TextView
+        android:id="@+id/meeting_content"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:scrollbars="vertical"
+        android:layout_gravity="center"
+        android:background="@drawable/text_back" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/meeting_place"/>
+        <TextView
+            android:id="@+id/meeting_place"
+            android:layout_width="276dp"
+            android:layout_height="40dp"
+            android:background="@drawable/text_back"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:src="@drawable/meeting_publisher"/>
+        <TextView
+        android:id="@+id/meeting_publisher"
+        android:layout_width="264dp"
+        android:layout_height="40dp"
+            android:background="@drawable/text_back"
+        />
+    </LinearLayout>
+
+    <AbsoluteLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="right"
+            android:id="@+id/meeting_delete"
+            android:background="@drawable/delete"
+            android:layout_x="300dp"
+            android:layout_y="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:id="@+id/meeting_navi"
+            android:background="@drawable/navi"
+            android:layout_y="10dp"
+            android:layout_x="100dp" />
+    </AbsoluteLayout>
+
+</LinearLayout>

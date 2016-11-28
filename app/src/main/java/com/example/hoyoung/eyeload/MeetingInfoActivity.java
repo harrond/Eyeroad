@@ -1,5 +1,4 @@
-package kr.soen.mypart;
-
+package com.example.hoyoung.eyeload;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;

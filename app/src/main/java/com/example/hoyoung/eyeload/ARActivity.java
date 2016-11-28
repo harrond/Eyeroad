@@ -55,7 +55,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     public static final float TWENTY_PERCENT = 2f * TEN_PERCENT;
     public static final float EIGHTY_PERCENTY = 4f * TWENTY_PERCENT;
 
-    public static boolean useCollisionDetection = true;
+    public static boolean useCollisionDetection = false;
     public static boolean visibleMarker = true;
 
     private static final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(1);
@@ -82,6 +82,12 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        Intent intent=getIntent();
+        path=(List<HashMap<String,Double>>)intent.getSerializableExtra("path");
+        if(path!=null){
+            createPathMarker();
+        }
+
         camScreen = new CameraModel.CameraSurface(this);
         setContentView(camScreen);
 
@@ -97,7 +103,13 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         findViewById(R.id.btnMemo).setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        Intent intent = new Intent(ARActivity.this, NoteEdit.class);
+                        Intent intent = new Intent(ARActivity.this, MakingMemoAcitivity.class);
+                        Location loc = ARData.getCurrentLocation();
+                        HashMap<String,Double> hashloc = new HashMap<String, Double>();
+                        hashloc.put("x",loc.getLatitude());
+                        hashloc.put("y",loc.getLongitude());
+                        hashloc.put("z",loc.getAltitude());
+                        intent.putExtra("cl",hashloc);
                         startActivity(intent);
                     }
                 }
@@ -117,11 +129,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
                     }
                 }
         );
-        Intent intent=getIntent();
-        path=(List<HashMap<String,Double>>)intent.getSerializableExtra("path");
-        if(path!=null){
-            createPathMarker();
-        }
+
 
         updateDataOnZoom();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -191,11 +199,11 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         Bitmap a= BitmapFactory.decodeResource(this.getResources(),R.drawable.smaile );
         for(i=0;i<path.size();i++){
             if(i==size-1){
-                Marker d=new Marker("Destination",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-10f, Color.BLUE,a,3);
+                Marker d=new Marker("Destination",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f, Color.BLUE,a,3);
                 pathmarkers.add(d);
                 break;
             }
-            Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-10f, Color.BLUE,a,2);
+            Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f, Color.BLUE,a,2);
             pathmarkers.add(d);
         }
 
@@ -230,7 +238,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     }
 
     private void markerTouched(Marker marker) {
-        //마커 터치 되었을때 동작.
+        marker.
     }
 
     private void updateData(final double lat, final double lon, final double alt) {
@@ -255,6 +263,9 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         //DB에서 다운하는 부분
         //Bitmap a= BitmapFactory.decodeResource(this.getResources(), );
        // ArrayList<MemoDTO>
+        MemoControl memoControl = MemoControl.getInstance();
+       // = memoControl.getAllMemo();
+
         List<Marker> markers = new ArrayList<Marker>();
         Marker d = new Marker("Lab", 37.5583037, 126.9984677, 90, Color.RED, bitmap);
         markers.add(d);

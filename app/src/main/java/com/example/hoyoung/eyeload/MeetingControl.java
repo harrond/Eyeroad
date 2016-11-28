@@ -1,24 +1,13 @@
-package kr.soen.mypart;
+package com.example.hoyoung.eyeload;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by Jin on 2016-10-8.
