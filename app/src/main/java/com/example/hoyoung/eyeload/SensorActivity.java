@@ -165,7 +165,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
             grav[1] = smooth[1];
             grav[2] = smooth[2];
         } else if (evt.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            smooth = LowPassFilter.filter(2.0f, 4.0f, evt.values, mag);
+            smooth = LowPassFilter.filter(2.0f, 4.0f, evt.values, mag);   // 2 4
             mag[0] = smooth[0];
             mag[1] = smooth[1];
             mag[2] = smooth[2];
@@ -203,6 +203,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 
     public void onLocationChanged(Location location) {
         ARData.setCurrentLocation(location);
+
         gmf = new GeomagneticField((float) ARData.getCurrentLocation().getLatitude(), (float) ARData.getCurrentLocation().getLongitude(), (float) ARData.getCurrentLocation().getAltitude(), System.currentTimeMillis());
 
         double angleY = Math.toRadians(-gmf.getDeclination());

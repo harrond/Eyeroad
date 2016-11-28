@@ -1,15 +1,13 @@
-package kr.soen.mypart;
+package com.example.hoyoung.eyeload;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 /**
  * Created by Jin on 2016-10-8.

@@ -207,6 +207,7 @@ public abstract class ARData {
         }
         if(path !=null) {
             for (Marker marker : path) {
+                Log.d(TAG, "path marker chaingeifjji" + location.toString());
                 marker.calcRelativePosition(location);
             }
         }

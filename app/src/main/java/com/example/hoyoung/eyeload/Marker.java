@@ -285,7 +285,8 @@ public class Marker implements Comparable<Marker> {
         if (debugTouchZone) drawTouchZone(canvas);
         if (debugCollisionZone) drawCollisionZone(canvas);
         drawIcon(canvas);
-        drawText(canvas);
+        if(markerType!=2)
+            drawText(canvas);
     }
 
     protected synchronized void drawCollisionZone(Canvas canvas) {

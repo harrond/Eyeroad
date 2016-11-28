@@ -3,9 +3,9 @@ package com.example.hoyoung.eyeload;
 public class LowPassFilter {
 
     private static final float ALPHA_DEFAULT = 0.123f;
-    private static final float ALPHA_STEADY = 0.001f;
-    private static final float ALPHA_START_MOVING = 0.1f;
-    private static final float ALPHA_MOVING = 0.2f;
+    private static final float ALPHA_STEADY =  0.001f;
+    private static final float ALPHA_START_MOVING = 0.12f;
+    private static final float ALPHA_MOVING = 0.22f;
 
     private LowPassFilter() {
     }

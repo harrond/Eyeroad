@@ -4,8 +4,10 @@
     android:layout_height="fill_parent"
     >
     <ToggleButton
+        android:id="@+id/btnOnOff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked = "true"
         android:text="Toggle"
         android:textOff="Off"
         android:textOn="On"
