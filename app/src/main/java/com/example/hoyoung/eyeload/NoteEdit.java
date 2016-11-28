@@ -32,8 +32,6 @@ import android.widget.ImageView;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import static android.R.attr.id;
-
 public class NoteEdit extends Activity {
     private EditText mTitleText;
     private EditText mBodyText;
@@ -42,6 +40,7 @@ public class NoteEdit extends Activity {
     private NotesDbAdapter mDbHelper;
     private String mImageString;
     final static int ACT_EDIT = 0;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -59,7 +58,7 @@ public class NoteEdit extends Activity {
 
         mTitleText = (EditText) findViewById(R.id.title);
         mBodyText = (EditText) findViewById(R.id.body);
-        mImage=(ImageView)findViewById(R.id.imageresult);
+        mImage = (ImageView) findViewById(R.id.imageresult);
         findViewById(R.id.imageupload).setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
@@ -100,8 +99,8 @@ public class NoteEdit extends Activity {
                     note.getColumnIndexOrThrow(NotesDbAdapter.KEY_TITLE)));
             mBodyText.setText(note.getString(
                     note.getColumnIndexOrThrow(NotesDbAdapter.KEY_BODY)));
-            byte[] bytePlainOrg=Base64.decode(mImageString,0);
-            ByteArrayInputStream inStream=new ByteArrayInputStream(bytePlainOrg);
+            byte[] bytePlainOrg = Base64.decode(mImageString, 0);
+            ByteArrayInputStream inStream = new ByteArrayInputStream(bytePlainOrg);
             mImage.setImageBitmap(BitmapFactory.decodeStream(inStream));
         }
     }
@@ -128,7 +127,7 @@ public class NoteEdit extends Activity {
     private void saveState() {
         String title = mTitleText.getText().toString();
         String body = mBodyText.getText().toString();
-        String image=mImageString;
+        String image = mImageString;
 
         if (mRowId == null) {
             //long id = mDbHelper.createNote(title, body,image);
@@ -145,14 +144,15 @@ public class NoteEdit extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ACT_EDIT:
-                if(resultCode == RESULT_OK) {
-                   mImage.setImageBitmap((Bitmap)data.getParcelableExtra("image"));
-                    mImageString=bitmapToByteArray((Bitmap)data.getParcelableExtra("image"));
+                if (resultCode == RESULT_OK) {
+                    mImage.setImageBitmap((Bitmap) data.getParcelableExtra("image"));
+                    mImageString = bitmapToByteArray((Bitmap) data.getParcelableExtra("image"));
                 }
                 break;
         }
     }
-    public String bitmapToByteArray(Bitmap bitmap){
+
+    public String bitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();

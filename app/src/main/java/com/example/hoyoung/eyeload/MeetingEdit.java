@@ -6,22 +6,24 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 /**
  * Created by ATIV_NINE on 2016-11-08.
  */
 public class MeetingEdit extends Activity {
-        private EditText mTitleText;
-        private EditText mBodyText;
-        private Long mRowId;
-        private MeetingDbAdapter mDbHelper;
-        final static int ACT_EDIT = 0;
-        /**
-         * ATTENTION: This was auto-generated to implement the App Indexing API.
-         * See https://g.co/AppIndexing/AndroidStudio for more information.
-         */
+    private EditText mTitleText;
+    private EditText mBodyText;
+    private Long mRowId;
+    private MeetingDbAdapter mDbHelper;
+    final static int ACT_EDIT = 0;
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDbHelper = new MeetingDbAdapter(this);
         mDbHelper.open();
@@ -51,6 +53,7 @@ public class MeetingEdit extends Activity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
+
     private void populateFields() {
         if (mRowId != null) {
             Cursor meeting = mDbHelper.fetchMeeting(mRowId);
@@ -62,22 +65,26 @@ public class MeetingEdit extends Activity {
 
         }
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
         outState.putSerializable(MeetingDbAdapter.KEY_ROWID, mRowId);
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         saveState();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         populateFields();
     }
+
     private void saveState() {
         String title = mTitleText.getText().toString();
         String body = mBodyText.getText().toString();

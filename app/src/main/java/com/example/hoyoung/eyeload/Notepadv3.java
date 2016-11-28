@@ -31,15 +31,17 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 public class Notepadv3 extends ListActivity {
-    private static final int ACTIVITY_CREATE=0;
-    private static final int ACTIVITY_EDIT=1;
+    private static final int ACTIVITY_CREATE = 0;
+    private static final int ACTIVITY_EDIT = 1;
 
     private static final int INSERT_ID = Menu.FIRST;
     private static final int DELETE_ID = Menu.FIRST + 1;
 
     private NotesDbAdapter mDbHelper;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +51,8 @@ public class Notepadv3 extends ListActivity {
         fillData();
         registerForContextMenu(getListView());
         findViewById(R.id.memo).setOnClickListener(
-                new Button.OnClickListener(){
-                    public  void onClick(View v)
-                    {
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
                         Intent intent = new Intent(Notepadv3.this, NoteEdit.class);
                         startActivity(intent);
                     }
@@ -70,8 +71,8 @@ public class Notepadv3 extends ListActivity {
         int[] to = new int[]{R.id.text1};
 
         // Now create a simple cursor adapter and set it to display
-        SimpleCursorAdapter notes = 
-            new SimpleCursorAdapter(this, R.layout.notes_row, notesCursor, from, to);
+        SimpleCursorAdapter notes =
+                new SimpleCursorAdapter(this, R.layout.notes_row, notesCursor, from, to);
         setListAdapter(notes);
     }
 
@@ -84,7 +85,7 @@ public class Notepadv3 extends ListActivity {
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case INSERT_ID:
                 createNote();
                 return true;
@@ -95,14 +96,14 @@ public class Notepadv3 extends ListActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
-            ContextMenuInfo menuInfo) {
+                                    ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(0, DELETE_ID, 0, R.string.menu_delete);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case DELETE_ID:
                 AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
                 mDbHelper.deleteNote(info.id);

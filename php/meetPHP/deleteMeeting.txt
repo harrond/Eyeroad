@@ -1,25 +1,29 @@
 <?php
 
-	$con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
-	mysqli_set_charset($con,"utf8");
+        $con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
+        mysqli_set_charset($con,"utf8");
 
-	if (mysqli_connect_errno($con))  
-	{
-		echo "Failed to connect to MySQL: " . mysqli_connect_error();  
+        if (mysqli_connect_errno($con))
+        {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-  
-	$meetingKey = $_POST['meetingKey'];
 
-	$result = mysqli_query($con,"delete from Meeting where meetingKey='$meetingKey'");
+        $meetingKey = $_POST['meetingKey'];
+        $password = $_POST['password'];
 
-	if($result)
-	{  
-		echo 'success';  
-	}
-	else
-	{ 
-		echo 'failure';  
-	}
+        $result = mysqli_query($con,"delete from Meeting where meetingKey='$meetingKey' and password='$password'");
+		
+        if($result)
+        {
+		if(mysqli_affected_rows($con)==1)
+			echo 'success';
+                else
+			echo 'failure';
+        }
+        else
+        {
+                echo 'failure';
+        }
 
-	mysqli_close($con);  
+        mysqli_close($con);
 ?>

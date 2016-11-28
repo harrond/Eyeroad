@@ -1,6 +1,8 @@
 package kr.soen.mypart;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,25 +18,31 @@ import android.widget.Toast;
 public class MemoManagementActivity extends AppCompatActivity {
 
     private ListView listView;
-    private MemoControl control = MemoControl.getInstance();
+    private MemoControl control;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        control.getAllMemo(); // DB에서 Memo에 관한 모든 정보를 가져옴
         setContentView(R.layout.activity_memo_management);
-        try{ Thread.sleep(20);}catch(Exception e){}
         setupListView();
-        memoClicked();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        setupListView();
+
     }
 
     //List내용을 xml에 추가하는 부분
     public void setupListView()
     {
-        listView = (ListView) findViewById(R.id.memoManagementListview1);
-        listView.setAdapter(control);
 
-        //Toast.makeText(MemoManagementActivity.this,"cal", Toast.LENGTH_SHORT).show();
+        SelectAllMemo selectAllMemo = new SelectAllMemo();
+        selectAllMemo.execute();
+
     }
 
     public void memoClicked() {
@@ -44,7 +52,6 @@ public class MemoManagementActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast.makeText(MemoManagementActivity.this, control.getMemoList().get(position).getTitle()+" is clicked.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MemoManagementActivity.this,MemoInfoActivity.class);
                 intent.putExtra("memoKey",String.valueOf(control.getMemoList().get(position).getKey()));
                 startActivity(intent);
@@ -52,5 +59,43 @@ public class MemoManagementActivity extends AppCompatActivity {
             }
         };
         listView.setOnItemClickListener(listener);
+    }
+
+
+    class SelectAllMemo extends AsyncTask<Void, Void, Void> {
+        ProgressDialog loading;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = new ProgressDialog(MemoManagementActivity.this);
+            loading.setMessage("불러오는 중입니다.");
+
+            listView = (ListView) findViewById(R.id.memoManagementListview1);
+
+            control = MemoControl.getInstance();
+
+            loading.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            loading.dismiss();
+
+            listView.setAdapter(control);
+
+            memoClicked();
+
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            control.getAllPersonalMemo();
+
+            return null;
+        }
     }
 }

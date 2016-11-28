@@ -11,9 +11,11 @@
                 echo "Failed to connect to MySQL: " . mysqli_connect_error();
         }
 
+        $deviceID = $_POST['deviceID'];
+
         mysqli_set_charset($con,"utf8");
 
-        $res = mysqli_query($con,"select * from Memo");
+        $res = mysqli_query($con,"select * from Memo where deviceID='$deviceID'");
 
         $result = array();
 

@@ -17,20 +17,24 @@ public class MemoDTO extends DTO{
     private double y;
     private double z;
     private String content;
-    private String date;
-    //private Date date;
+    private Date date;
     private String image;
     private int iconId;
     private String deviceID;
     private int visibility;
 
-    //public Date   getDate() {
-    //    return date;
-    //}
-    //public void   setDate(Date date) {
-    //    this.date = date;
-    //}
-
+    public MemoDTO(){
+        title = null;
+        x = 0;
+        y = 0;
+        z = 0;
+        content = null;
+        date = null;
+        image = "null";
+        iconId = 1;
+        deviceID = "null";
+        visibility = 0;
+    }
 
     @Override
     public int getKey() {
@@ -82,11 +86,11 @@ public class MemoDTO extends DTO{
         this.content = content;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

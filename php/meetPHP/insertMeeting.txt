@@ -15,8 +15,11 @@
 	$publisher = $_POST['publisher'];
 	$password = $_POST['password'];
 
-	#$result = mysqli_query($con,"insert into Meeting (meetingKey,title, placeName, meetingInfo, publisher, password) values ('$meetingKey','$title','$placeName','$meetingInfo','$publisher','$password')");
-	$result = mysqli_query($con,"insert into Meeting (title, placeName, meetingInfo, publisher, password) values ('$title','$placeName','$meetingInfo','$publisher','$password')");
+	if($title != null)
+	{
+		#$result = mysqli_query($con,"insert into Meeting (meetingKey,title, placeName, meetingInfo, publisher, password) values ('$meetingKey','$title','$placeName','$meetingInfo','$publisher','$password')");
+		$result = mysqli_query($con,"insert into Meeting (title, placeName, meetingInfo, publisher, password) values ('$title','$placeName','$meetingInfo','$publisher','$password')");
+	}
 
 	if($result)
 	{  

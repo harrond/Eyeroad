@@ -28,7 +28,7 @@ import android.util.Log;
  * Simple meetings database access helper class. Defines the basic CRUD operations
  * for the meetings example, and gives the ability to list all meetings as well as
  * retrieve or modify a specific meetings.
- *
+ * <p>
  * This has been improved from the first version of this tutorial through the
  * addition of better error handling and also using returning a Cursor instead
  * of using a collection of inner classes (which is less scalable and not
@@ -94,7 +94,7 @@ public class MeetingDbAdapter {
      * signal the failure
      *
      * @return this (self reference, allowing this to be chained in an
-     *         initialization call)
+     * initialization call)
      * @throws SQLException if the database could be neither opened or created
      */
     public MeetingDbAdapter open() throws SQLException {
@@ -114,10 +114,9 @@ public class MeetingDbAdapter {
      * a -1 to indicate failure.
      *
      * @param title the title of the meeting
-     * @param body the body of the meeting
+     * @param body  the body of the meeting
      * @return rowId or -1 if failed
      */
-
 
 
     public long createMeeting(String title, String body) {
@@ -147,7 +146,7 @@ public class MeetingDbAdapter {
      */
     public Cursor fetchAllMeeting() {
 
-        return mDb.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_TITLE,
+        return mDb.query(DATABASE_TABLE, new String[]{KEY_ROWID, KEY_TITLE,
                 KEY_BODY}, null, null, null, null, null);
     }
 
@@ -162,7 +161,7 @@ public class MeetingDbAdapter {
 
         Cursor mCursor =
 
-                mDb.query(true, DATABASE_TABLE, new String[] {KEY_ROWID,
+                mDb.query(true, DATABASE_TABLE, new String[]{KEY_ROWID,
                                 KEY_TITLE, KEY_BODY}, KEY_ROWID + "=" + rowId, null,
                         null, null, null, null);
         if (mCursor != null) {
@@ -179,7 +178,7 @@ public class MeetingDbAdapter {
      *
      * @param rowId id of meeting to update
      * @param title value to set meeting title to
-     * @param body value to set meeting body to
+     * @param body  value to set meeting body to
      * @return true if the meeting was successfully updated, false otherwise
      */
     public boolean updateMeeting(long rowId, String title, String body) {

@@ -1,36 +1,39 @@
 <?php
 
-	$con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
-	mysqli_set_charset($con,"utf8");
+        $con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
+        mysqli_set_charset($con,"utf8");
 
-	if (mysqli_connect_errno($con))  
-	{
-		echo "Failed to connect to MySQL: " . mysqli_connect_error();  
+        if (mysqli_connect_errno($con))
+        {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-  
-	#$memoKey = $_POST['memoKey'];
-	$title = $_POST['title'];
-	$x = $_POST['x'];
-	$y = $_POST['y'];
-	$z = $_POST['z'];
-	$content = $_POST['content'];
-	$date = $_POST['date'];
-	$image = $_POST['image'];
-	$iconId = $_POST['iconId'];
-	$deviceID = $_POST['deviceID'];
-	$visibility = $_POST['visibility'];
 
-	#$result = mysqli_query($con,"insert into Memo (memoKey, title, x, y, z, content, date, image, iconId, deviceID, visibility) values ('$memoKey', '$title', '$x', '$y', '$z', '$data','$content', '$image', '$iconId', '$deviceID','$visibility')");	
-	$result = mysqli_query($con,"insert into Memo (title, x, y, z, content, date, image, iconId, deviceID, visibility) values ('$title', '$x', '$y', '$z', '$data','$content', '$image', '$iconId', '$deviceID','$visibility')");
+        #$memoKey = $_POST['memoKey'];
+        $title = $_POST['title'];
+        $x = $_POST['x'];
+        $y = $_POST['y'];
+        $z = $_POST['z'];
+        $content = $_POST['content'];
+        $date = $_POST['date'];
+        $image = $_POST['image'];
+        $iconId = $_POST['iconId'];
+        $deviceID = $_POST['deviceID'];
+        $visibility = $_POST['visibility'];
 
-	if($result)
-	{  
-		echo 'success';  
-	}
-	else
-	{ 
-		echo 'failure';  
-	}
+        if($title != null)
+        {
+                #$result = mysqli_query($con,"insert into Memo (memoKey, title, x, y, z, content, date, image, iconId, deviceID, visibility) values ('$memoKey', '$title', '$x', '$y', '$z', '$content','$date', '$image', '$iconId', '$deviceID','$visibility')");
+                $result = mysqli_query($con,"insert into Memo (title, x, y, z, content, date, image, iconId, deviceID, visibility) values ('$title', '$x', '$y', '$z', '$content','$date', '$image', '$iconId', '$deviceID','$visibility')");
+        }
 
-	mysqli_close($con);  
+        if($result)
+        {
+                echo 'success';
+        }
+        else
+        {
+                echo 'failure';
+        }
+
+        mysqli_close($con);
 ?>

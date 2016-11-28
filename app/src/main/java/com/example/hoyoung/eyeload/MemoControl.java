@@ -2,6 +2,7 @@ package kr.soen.mypart;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -25,7 +27,7 @@ import java.util.Map;
 
 public class MemoControl extends BaseAdapter {
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList 및 서버로부터 받은 DTO list
-    private ArrayList<MemoDTO> memoList = new ArrayList<>();
+    private ArrayList<MemoDTO> memoList = new ArrayList<MemoDTO>();
     private MemoDTO memoDTOSelected = new MemoDTO();
     private MemoDAO memoDAO = new MemoDAO();
 
@@ -91,23 +93,43 @@ public class MemoControl extends BaseAdapter {
         return memoList.get(position) ;
     }
 
-    public void getMemo(int key)
+    //DB에서 MemoKey값이 key인 DTO를 불러오는 함수
+    public MemoDTO getMemo(int key)
     {
         memoDTOSelected = memoDAO.select(key);
+        return memoDTOSelected;
         //Log.d("TEST","MemoControl getMemo " + memoDTOSelected.getTitle());
     }
 
-    //DB에서 DTO를 가져오는 함수
+    //DB에서 모든 DTO를 가져오는 함수
     public void getAllMemo()
     {
-
         memoList = memoDAO.selectAll();
-        //Log.d("print","memoControl's memoList size : "+ String.valueOf(memoList.size()) );
     }
 
-    public void setInfo(String title,Double x,Double y,Double z,String content, String date,String image,int iconId,String deviceID,int visibility)
+    //DB에서 DeviceID값이 같은 모든 DTO를 불러오는 함수
+    public boolean getAllPersonalMemo()
+    {
+        try {
+            String deviceID;
+            deviceID = String.valueOf(Build.class.getField("SERIAL").get(null));
+            memoList = memoDAO.selectAllMemo(deviceID);
+
+            return true;
+        }catch (Exception e)
+        {
+            e.getMessage();
+            return false;
+        }
+
+    }
+
+
+    //매개변수의 값을 가진 DTO를 DB에 저장하는 함수
+    public boolean setInfo(String title, Double x, Double y, Double z, String content, Date date, String image, int iconId, String deviceID, int visibility)
     {
         MemoDTO memoDTO = new MemoDTO();
+
         //memoDTO.setKey(memoKey);
         memoDTO.setTitle(title);
         memoDTO.setX(x);
@@ -119,11 +141,14 @@ public class MemoControl extends BaseAdapter {
         memoDTO.setIconId(iconId);
         memoDTO.setDeviceID(deviceID);
         memoDTO.setVisibility(visibility);
-        memoDAO.insert(memoDTO);
+
+        return memoDAO.insert(memoDTO);
     }
-    public void deleteInfo(int key)
+
+    //DB에서 MeetingKey값이 key인 DTO를 삭제하는 함수
+    public boolean deleteInfo(int key)
     {
-        memoDAO.delete(key);
+        return memoDAO.delete(key);
     }
 
 

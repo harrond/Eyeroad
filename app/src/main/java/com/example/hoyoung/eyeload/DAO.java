@@ -1,7 +1,5 @@
-package kr.soen.mypart;
+package com.example.hoyoung.eyeload;
 
-import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by Jin on 2016-11-17.

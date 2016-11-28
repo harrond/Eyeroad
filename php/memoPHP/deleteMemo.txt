@@ -1,25 +1,28 @@
 <?php
 
-	$con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
-	mysqli_set_charset($con,"utf8");
+        $con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
+        mysqli_set_charset($con,"utf8");
 
-	if (mysqli_connect_errno($con))  
-	{
-		echo "Failed to connect to MySQL: " . mysqli_connect_error();  
+        if (mysqli_connect_errno($con))
+        {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-  
-	$memoKey = $_POST['memoKey'];
 
-	$result = mysqli_query($con,"delete from Memo where memoKey='$memoKey'");
+        $memoKey = $_POST['memoKey'];
 
-	if($result)
-	{  
-		echo 'success';  
-	}
-	else
-	{ 
-		echo 'failure';  
-	}
+        if($memoKey != null)
+        {
+                $result = mysqli_query($con,"delete from Memo where memoKey='$memoKey'");
+        }
 
-	mysqli_close($con);  
+        if($result)
+        {
+                echo 'success';
+        }
+        else
+        {
+                echo 'failure';
+        }
+
+        mysqli_close($con);
 ?>

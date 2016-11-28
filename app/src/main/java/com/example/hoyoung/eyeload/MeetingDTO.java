@@ -13,6 +13,15 @@ public class MeetingDTO extends DTO{
     private String publisher;
     private String password;
 
+    public MeetingDTO()
+    {
+        title = null;
+        placeName = null;
+        meetingInfo = null;
+        publisher = null;
+        password = "1234"; // default 비밀번호 값
+    }
+
     public int getKey() {
         return meetingKey;
     }

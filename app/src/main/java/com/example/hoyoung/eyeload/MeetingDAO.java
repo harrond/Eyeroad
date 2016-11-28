@@ -8,9 +8,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -34,318 +36,170 @@ public class MeetingDAO extends DAO{
 
     public boolean insert(MeetingDTO dto)
     {
-        class InsertData extends AsyncTask<String, Void, String>{
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                //loading = ProgressDialog.show(MakingMeetingActivity.this, "Please Wait", null, true, true);
+        try{
+
+            //String meetingKey = (String)params[0];
+            String title = dto.getTitle();
+            String placeName = dto.getPlaceName();
+            String meetingInfo = dto.getMeetingInfo();
+            String publisher = dto.getPublisher();
+            String password = dto.getPassword();
+
+            String link="http://210.94.194.201/insertMeeting.php";
+            //String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(meetingKey, "UTF-8");
+            //meetingKey는 자동으로 설정됨
+            String data  = URLEncoder.encode("title", "UTF-8") + "=" + URLEncoder.encode(title, "UTF-8");
+            data += "&" + URLEncoder.encode("placeName", "UTF-8") + "=" + URLEncoder.encode(placeName, "UTF-8");
+            data += "&" + URLEncoder.encode("meetingInfo", "UTF-8") + "=" + URLEncoder.encode(meetingInfo, "UTF-8");
+            data += "&" + URLEncoder.encode("publisher", "UTF-8") + "=" + URLEncoder.encode(publisher, "UTF-8");
+            data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
+
+            URL url = new URL(link);
+            URLConnection conn = url.openConnection();
+
+            conn.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+
+            wr.write( data );
+            wr.flush();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+
+            // Read Server Response
+            while((line = reader.readLine()) != null)
+            {
+                sb.append(line);
+                break;
             }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                //loading.dismiss();
-                //Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                try{
-
-                    //String meetingKey = (String)params[0];
-                    String title = (String)params[0];
-                    String placeName = (String)params[1];
-                    String meetingInfo = (String)params[2];
-                    String publisher = (String)params[3];
-                    String password = (String)params[4];
-
-                    String link="http://210.94.194.201/insertMeeting.php";
-                    //String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(meetingKey, "UTF-8");
-                    //meetingKey는 자동으로 설정됨
-                    String data  = URLEncoder.encode("title", "UTF-8") + "=" + URLEncoder.encode(title, "UTF-8");
-                    data += "&" + URLEncoder.encode("placeName", "UTF-8") + "=" + URLEncoder.encode(placeName, "UTF-8");
-                    data += "&" + URLEncoder.encode("meetingInfo", "UTF-8") + "=" + URLEncoder.encode(meetingInfo, "UTF-8");
-                    data += "&" + URLEncoder.encode("publisher", "UTF-8") + "=" + URLEncoder.encode(publisher, "UTF-8");
-                    data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
-
-                    URL url = new URL(link);
-                    URLConnection conn = url.openConnection();
-
-                    conn.setDoOutput(true);
-                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-
-                    wr.write( data );
-                    wr.flush();
-
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                    StringBuilder sb = new StringBuilder();
-                    String line = null;
-
-                    // Read Server Response
-                    while((line = reader.readLine()) != null)
-                    {
-                        sb.append(line);
-                        break;
-                    }
-                    return sb.toString();
-                }
-                catch(Exception e){
-                    return new String("Exception: " + e.getMessage());
-                }
-
-            }
+            if(sb.toString().equals("success"))
+                return true;
+            else
+                return false;
+        }
+        catch(Exception e){
+            return false;
         }
 
-        InsertData task = new InsertData();
-        //task.execute(meetingKey, title,placeName, meetingInfo, publisher, password);
-        task.execute(dto.getTitle(),dto.getPlaceName(), dto.getMeetingInfo(), dto.getPublisher(), dto.getPassword());
-
-        return true;
     }
 
-    public void deleteInfo(int key){
-        String meetingKey = String.valueOf(key);
-        class DeleteInfo extends AsyncTask<String, Void, String>{
-            //ProgressDialog loading;
+    public boolean deleteInfo(String key, String password){
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                //loading = ProgressDialog.show(MeetingInfoActivity, "Please Wait", null, true, true);
+        try{
+
+            String link="http://210.94.194.201/deleteMeeting.php";
+            String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(key, "UTF-8");
+            data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
+
+            URL url = new URL(link);
+            URLConnection conn = url.openConnection();
+
+            conn.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+
+            wr.write( data );
+            wr.flush();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+
+            while((line = reader.readLine()) != null)
+            {
+                sb.append(line);
+                break;
             }
 
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                //loading.dismiss();
-                //Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                try{
-                    String key = (String)params[0];
-
-                    String link="http://210.94.194.201/deleteMeeting.php";
-                    String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(key, "UTF-8");
-
-                    URL url = new URL(link);
-                    URLConnection conn = url.openConnection();
-
-                    conn.setDoOutput(true);
-                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-
-                    wr.write( data );
-                    wr.flush();
-
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                    StringBuilder sb = new StringBuilder();
-                    String line = null;
-
-                    while((line = reader.readLine()) != null)
-                    {
-                        sb.append(line);
-                        break;
-                    }
-                    return sb.toString();
-                }
-                catch(Exception e){
-                    return new String("Exception: " + e.getMessage());
-                }
-
-            }
+            if(sb.toString().equals("success"))
+                return true;
+            else
+                return false;
         }
-
-        DeleteInfo task = new DeleteInfo();
-        task.execute(meetingKey);
+        catch(Exception e){
+           return false;
+        }
     }
 
     public MeetingDTO select(int key)
     {
-        class SelectData extends AsyncTask<String, Void, String>{
+        try {
+            String meetingKey = String.valueOf(key);
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                //loading = ProgressDialog.show(MakingMeetingActivity.this, "Please Wait", null, true, true);
+            String link = "http://210.94.194.201/selectMeeting.php";
+            String data = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(meetingKey, "UTF-8");
+
+
+            URL url = new URL(link);
+            URLConnection con = url.openConnection();
+            con.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+
+            wr.write(data);
+            wr.flush();
+
+            StringBuilder sb = new StringBuilder();
+
+            BufferedReader bufferedReader= new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            String json;
+            while((json = bufferedReader.readLine())!= null){
+                sb.append(json+"\n");
             }
 
-            @Override
-            protected void onPostExecute(String s) {
+            String queryJson = sb.toString().trim();
+            JSONObject jsonObj = new JSONObject(queryJson);
+            JSONArray meetingInfo = jsonObj.getJSONArray("result");
 
-                try{
-                    JSONObject jsonObj = new JSONObject(s);
-                    JSONArray jsonArrayMeetingDTO = null;
-                    jsonArrayMeetingDTO = jsonObj.getJSONArray("result");
+            JSONObject c = meetingInfo.getJSONObject(0);
 
-                    for(int i=0;i<jsonArrayMeetingDTO.length();i++) {
+            MeetingDTO selectedMeetingDTO=new MeetingDTO();
 
-                        //MeetingDTO 객체를 생성
-                        MeetingDTO meetingDTO = new MeetingDTO();
+            selectedMeetingDTO.setTitle(c.getString("title"));
+            selectedMeetingDTO.setPlaceName(c.getString("placeName"));
+            selectedMeetingDTO.setMeetingInfo(c.getString("meetingInfo"));
+            selectedMeetingDTO.setPublisher("publisher");
+            selectedMeetingDTO.setPassword("password");
 
-                        JSONObject c = jsonArrayMeetingDTO.getJSONObject(i);
-                        //MeetingDTO 객체에 정보 삽입
-                        //meetingDTO.setKey(Integer.parseInt(c.getString("meetingKey")));
-                        meetingDTO.setTitle(c.getString("title"));
-                        meetingDTO.setPlaceName(c.getString("placeName"));
-                        meetingDTO.setMeetingInfo(c.getString("meetingInfo"));
-                        meetingDTO.setPublisher(c.getString("publisher"));
-                        meetingDTO.setPassword(c.getString("password"));
-
-                        //MeetingDTO 객체를 ArrayList에 삽입
-                        meetingDTOSelected = meetingDTO;
-
-                        Log.d("TESTING","MeetingDAO onPostExcute end");
-                    }
-                }catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                try{
-
-                    //String meetingKey = (String)params[0];
-                    String key = (String)params[0];
+            return selectedMeetingDTO;
 
 
-                    String link="http://210.94.194.201/selectMeeting.php";
-                    //String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(meetingKey, "UTF-8");
-                    //meetingKey는 자동으로 설정됨
-                    String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(key, "UTF-8");
-
-
-                    URL url = new URL(link);
-                    URLConnection conn = url.openConnection();
-
-                    conn.setDoOutput(true);
-                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-
-                    wr.write( data );
-                    wr.flush();
-
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                    StringBuilder sb = new StringBuilder();
-                    String line = null;
-
-                    // Read Server Response
-                    while((line = reader.readLine()) != null)
-                    {
-                        sb.append(line);
-                        break;
-                    }
-                    Log.d("TESTING","MeetingDAO doInBackground end");
-                    return sb.toString();
-                }
-
-
-                catch(Exception e){
-                    return new String("Exception: " + e.getMessage());
-                }
-
-            }
-
+        }catch (Exception e) {
+            return null;
         }
-        String meetingKey = String.valueOf(key);
-        SelectData task = new SelectData();
-        task.execute(meetingKey);
-
-        Log.d("TESTING","MeetingDAO select end");
-        return meetingDTOSelected;
     }
+
 
     public ArrayList<MeetingDTO> selectAll()
     {
-        class GetDataJSON extends AsyncTask<String, Void, String> {
 
-            @Override
-            protected String doInBackground(String... params) {
+        try {
 
-                String uri = params[0];
+            BufferedReader bufferedReader = null;
+            String link = "http://210.94.194.201/selectAllMeeting.php";
 
-                BufferedReader bufferedReader = null;
-                try {
-                    URL url = new URL(uri);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    StringBuilder sb = new StringBuilder();
+            URL url = new URL(link);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            StringBuilder sb = new StringBuilder();
 
-                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                    String json;
-                    while((json = bufferedReader.readLine())!= null){
-                        sb.append(json+"\n");
-                    }
-
-                    return sb.toString().trim();
-
-                }catch(Exception e){
-                    return null;
-                }
+            String json;
+            while ((json = bufferedReader.readLine()) != null) {
+                sb.append(json + "\n");
             }
 
-            @Override
-            protected void onPostExecute(String result){
-                arrayListMeetingDTO.clear();//업데이트를 위한 초기화부분
+            String result = sb.toString().trim();
+            arrayListMeetingDTO.clear();//업데이트를 위한 초기화부분
 
-                try{
-                    JSONObject jsonObj = new JSONObject(result);
-                    JSONArray jsonArrayMeetingDTO = null;
-                    jsonArrayMeetingDTO = jsonObj.getJSONArray("result");
-
-                    for(int i=0;i<jsonArrayMeetingDTO.length();i++) {
-
-                        //MeetingDTO 객체를 생성
-                        MeetingDTO meetingDTO = new MeetingDTO();
-
-                        JSONObject c = jsonArrayMeetingDTO.getJSONObject(i);
-                        //MeetingDTO 객체에 정보 삽입
-                        meetingDTO.setKey(Integer.parseInt(c.getString("meetingKey")));
-                        meetingDTO.setTitle(c.getString("title"));
-                        meetingDTO.setPlaceName(c.getString("placeName"));
-                        meetingDTO.setMeetingInfo(c.getString("meetingInfo"));
-                        meetingDTO.setPublisher(c.getString("publisher"));
-                        meetingDTO.setPassword(c.getString("password"));
-
-                        //MeetingDTO 객체를 ArrayList에 삽입
-                        arrayListMeetingDTO.add(meetingDTO);
-
-                    }
-                }catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        GetDataJSON g = new GetDataJSON();
-        g.execute("http://210.94.194.201/selectAllMeeting.php");
-
-        return arrayListMeetingDTO;
-    }
-    /*public ArrayList<MeetingDTO> selectAll()
-    {
-        getAllData("http://210.94.194.201/selectAllMeeting.php");
-        return arrayListMeetingDTO;
-    }
-
-
-
-    protected void showList(String myJSON) {
-
-        arrayListMeetingDTO.clear();//업데이트를 위한 초기화부분
-
-        try{
-            JSONObject jsonObj = new JSONObject(myJSON);
+            JSONObject jsonObj = new JSONObject(result);
             JSONArray jsonArrayMeetingDTO = null;
             jsonArrayMeetingDTO = jsonObj.getJSONArray("result");
-            //Log.d("print","meetingListLength : "+ String.valueOf(jsonArrayMeetingDTO.length()) );
-            for(int i=0;i<jsonArrayMeetingDTO.length();i++) {
+
+            for (int i = 0; i < jsonArrayMeetingDTO.length(); i++) {
 
                 //MeetingDTO 객체를 생성
                 MeetingDTO meetingDTO = new MeetingDTO();
@@ -363,46 +217,11 @@ public class MeetingDAO extends DAO{
                 arrayListMeetingDTO.add(meetingDTO);
 
             }
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
+        }catch(Exception e){
+                return null;
+            }
+        return arrayListMeetingDTO;
+
     }
-    public void getAllData(String url)
-    {
-        class GetDataJSON extends AsyncTask<String, Void, String> {
 
-            @Override
-            protected String doInBackground(String... params) {
-
-                String uri = params[0];
-
-                BufferedReader bufferedReader = null;
-                try {
-                    URL url = new URL(uri);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    StringBuilder sb = new StringBuilder();
-
-                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                    String json;
-                    while((json = bufferedReader.readLine())!= null){
-                        sb.append(json+"\n");
-                    }
-
-                    return sb.toString().trim();
-
-                }catch(Exception e){
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(String result){
-                showList(result);
-            }
-        }
-        GetDataJSON g = new GetDataJSON();
-        g.execute(url);
-
-    }*/
 }
