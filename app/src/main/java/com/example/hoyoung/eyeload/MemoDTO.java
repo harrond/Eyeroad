@@ -8,8 +8,8 @@ import java.util.Date;
  * Created by Jin on 2016-11-5.
  */
 
-public class MemoDTO extends DTO{
 
+public class MemoDTO extends DTO{
 
     private int key;
     private String title ;
@@ -23,6 +23,7 @@ public class MemoDTO extends DTO{
     private String deviceID;
     private int visibility;
 
+    //MemoDTO의 생성자
     public MemoDTO(){
         title = null;
         x = 0;

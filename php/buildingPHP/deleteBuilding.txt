@@ -1,6 +1,6 @@
 <?php
 
-	$con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
+        $con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
         mysqli_set_charset($con,"utf8");
 
         if (mysqli_connect_errno($con))
@@ -8,13 +8,10 @@
                 echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-        $memoKey = $_POST['memoKey'];
+        $id = $_POST['id'];
 
-        if($memoKey != null)
-        {
-                $result = mysqli_query($con,"delete from Memo where memoKey='$memoKey'");
-        }
-
+        $result = mysqli_query($con,"delete from Building where id='$id'");
+		
         if($result)
         {
 		if(mysqli_affected_rows($con)==1)

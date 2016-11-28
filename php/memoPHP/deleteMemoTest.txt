@@ -1,6 +1,6 @@
 <?php
 
-	$con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
+        $con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
         mysqli_set_charset($con,"utf8");
 
         if (mysqli_connect_errno($con))
@@ -17,10 +17,7 @@
 
         if($result)
         {
-		if(mysqli_affected_rows($con)==1)
-			echo 'success';
-                else
-			echo 'failure';
+                echo 'success';
         }
         else
         {

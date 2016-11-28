@@ -13,6 +13,7 @@ public class MeetingDTO extends DTO{
     private String publisher;
     private String password;
 
+    //MeetingDTO의 생성자
     public MeetingDTO()
     {
         title = null;

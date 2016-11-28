@@ -1,11 +1,14 @@
 package com.example.hoyoung.eyeload;
 
+import android.os.Build;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -13,43 +16,40 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
- * Created by Jin on 2016-11-17.
+ * Created by Jin on 2016-11-29.
  */
 
-public class MeetingDAO extends DAO{
+public class BuildingDAO extends DAO {
+    private BuildingDTO buildingDTO;
 
-    //private static MeetingDAO meetingDAO = new MeetingDAO();
-    private ArrayList<MeetingDTO> arrayListMeetingDTO = new ArrayList<>();
-    private MeetingDTO meetingDTOSelected = new MeetingDTO();
-
-    public MeetingDTO getMeetingDTOSelected()
+    public BuildingDAO()
     {
-        return meetingDTOSelected;
+        buildingDTO = new BuildingDTO();
+
     }
 
     //안드로이드->DB로 값을 삽입하기 위한 함수
-    public boolean insert(MeetingDTO dto)
+    public boolean insert(BuildingDTO dto)
     {
 
         try{
-
             //매개변수로 받은 객체의 정보를 빼오는 부분
-            //String meetingKey = (String)params[0];
-            String title = dto.getTitle();
-            String placeName = dto.getPlaceName();
-            String meetingInfo = dto.getMeetingInfo();
-            String publisher = dto.getPublisher();
-            String password = dto.getPassword();
+            String name = dto.getName();
+            String x = String.valueOf(dto.getX());
+            String y = String.valueOf(dto.getY());
+            String z = String.valueOf(dto.getZ());
+            String information = dto.getInformation();
+            String image = dto.getImage();
 
-            String link="http://210.94.194.201/insertMeeting.php";//변수들을 보낼 link
-            //String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(meetingKey, "UTF-8");
-            //meetingKey는 자동으로 설정됨
-            //PHP를 통해 변수들을 Mapping하는 부분
-            String data  = URLEncoder.encode("title", "UTF-8") + "=" + URLEncoder.encode(title, "UTF-8");
-            data += "&" + URLEncoder.encode("placeName", "UTF-8") + "=" + URLEncoder.encode(placeName, "UTF-8");
-            data += "&" + URLEncoder.encode("meetingInfo", "UTF-8") + "=" + URLEncoder.encode(meetingInfo, "UTF-8");
-            data += "&" + URLEncoder.encode("publisher", "UTF-8") + "=" + URLEncoder.encode(publisher, "UTF-8");
-            data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
+            String link="http://210.94.194.201/insertBuilding.php";//변수들을 보낼 link
+            //String data  = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(id, "UTF-8");
+            //id값은 자동으로 설정됨
+            String data  = URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode(name, "UTF-8");
+            data += "&" + URLEncoder.encode("x", "UTF-8") + "=" + URLEncoder.encode(x, "UTF-8");
+            data += "&" + URLEncoder.encode("y", "UTF-8") + "=" + URLEncoder.encode(y, "UTF-8");
+            data += "&" + URLEncoder.encode("z", "UTF-8") + "=" + URLEncoder.encode(z, "UTF-8");
+            data += "&" + URLEncoder.encode("information", "UTF-8") + "=" + URLEncoder.encode(information, "UTF-8");
+            data += "&" + URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(image, "UTF-8");
 
             URL url = new URL(link);
             URLConnection conn = url.openConnection();
@@ -71,6 +71,7 @@ public class MeetingDAO extends DAO{
                 sb.append(line);
                 break;
             }
+
             if(sb.toString().equals("success"))//성공적으로 불러왔을 시
                 return true;
             else
@@ -82,16 +83,15 @@ public class MeetingDAO extends DAO{
 
     }
 
-    //key값과 password를 이용하여 DB의 튜플을 삭제
-    public boolean deleteInfo(String key, String password){
+    //key값을 이용하여 DB의 튜플을 삭제
+    public boolean delete(String key){
 
         try{
 
-            String link="http://210.94.194.201/deleteMeeting.php";//key값과 password을 보낼 link
+            String link="http://210.94.194.201/deleteBuilding.php";//key값을 보낼 link
 
-            //PHP를 통해 변수들을 Mapping하는 부분
-            String data  = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(key, "UTF-8");
-            data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
+            String data  = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(key, "UTF-8");//PHP를 통해 변수들을 Mapping하는 부분
+
 
             URL url = new URL(link);
             URLConnection conn = url.openConnection();
@@ -120,17 +120,16 @@ public class MeetingDAO extends DAO{
                 return false;
         }
         catch(Exception e){
-           return false;
+            return false;
         }
     }
 
-    public MeetingDTO select(int key)
+    public boolean select(int key)
     {
         try {
-            String meetingKey = String.valueOf(key);
 
-            String link = "http://210.94.194.201/selectMeeting.php";
-            String data = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(meetingKey, "UTF-8");
+            String link = "http://210.94.194.201/selectBuilding.php";
+            String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(key), "UTF-8");
 
 
             URL url = new URL(link);
@@ -156,30 +155,31 @@ public class MeetingDAO extends DAO{
 
             JSONObject c = meetingInfo.getJSONObject(0);
 
-            MeetingDTO selectedMeetingDTO=new MeetingDTO();
+            BuildingDTO selectedBuildingDTO = new BuildingDTO();
 
-            selectedMeetingDTO.setTitle(c.getString("title"));
-            selectedMeetingDTO.setPlaceName(c.getString("placeName"));
-            selectedMeetingDTO.setMeetingInfo(c.getString("meetingInfo"));
-            selectedMeetingDTO.setPublisher("publisher");
-            selectedMeetingDTO.setPassword("password");
+            selectedBuildingDTO.setName(c.getString("name"));
+            selectedBuildingDTO.setX(Double.valueOf(c.getString("x")));
+            selectedBuildingDTO.setY(Double.valueOf(c.getString("y")));
+            selectedBuildingDTO.setZ(Double.valueOf(c.getString("z")));
+            selectedBuildingDTO.setInformation("information");
 
-            return selectedMeetingDTO;
+            buildingDTO = selectedBuildingDTO;
 
-
+            return true;
         }catch (Exception e) {
-            return null;
+            return false;
         }
+
     }
 
-
-    public ArrayList<MeetingDTO> selectAll()
+    public ArrayList<BuildingDTO> selectAll()
     {
+        ArrayList<BuildingDTO> arrayListBuildingDTO = new ArrayList<BuildingDTO>();
 
         try {
 
             BufferedReader bufferedReader = null;
-            String link = "http://210.94.194.201/selectAllMeeting.php";
+            String link = "http://210.94.194.201/selectAllBuilding.php";
 
             URL url = new URL(link);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -193,35 +193,34 @@ public class MeetingDAO extends DAO{
             }
 
             String result = sb.toString().trim();
-            arrayListMeetingDTO.clear();//업데이트를 위한 초기화부분
+            arrayListBuildingDTO.clear();//업데이트를 위한 초기화부분
 
             JSONObject jsonObj = new JSONObject(result);
-            JSONArray jsonArrayMeetingDTO = null;
-            jsonArrayMeetingDTO = jsonObj.getJSONArray("result");
+            JSONArray jsonArrayBuildingDTO = null;
+            jsonArrayBuildingDTO = jsonObj.getJSONArray("result");
 
-            for (int i = 0; i < jsonArrayMeetingDTO.length(); i++) {
+            for (int i = 0; i < jsonArrayBuildingDTO.length(); i++) {
 
                 //MeetingDTO 객체를 생성
-                MeetingDTO meetingDTO = new MeetingDTO();
+                BuildingDTO buildingDTO = new BuildingDTO();
 
-                JSONObject c = jsonArrayMeetingDTO.getJSONObject(i);
+                JSONObject c = jsonArrayBuildingDTO.getJSONObject(i);
                 //MeetingDTO 객체에 정보 삽입
-                meetingDTO.setKey(Integer.parseInt(c.getString("meetingKey")));
-                meetingDTO.setTitle(c.getString("title"));
-                meetingDTO.setPlaceName(c.getString("placeName"));
-                meetingDTO.setMeetingInfo(c.getString("meetingInfo"));
-                meetingDTO.setPublisher(c.getString("publisher"));
-                meetingDTO.setPassword(c.getString("password"));
+                buildingDTO.setName(c.getString("name"));
+                buildingDTO.setX(Double.valueOf(c.getString("x")));
+                buildingDTO.setY(Double.valueOf(c.getString("y")));
+                buildingDTO.setZ(Double.valueOf(c.getString("z")));
+                buildingDTO.setInformation(c.getString("information"));
+                buildingDTO.setImage(c.getString("image"));
 
                 //MeetingDTO 객체를 ArrayList에 삽입
-                arrayListMeetingDTO.add(meetingDTO);
+                arrayListBuildingDTO.add(buildingDTO);
 
             }
         }catch(Exception e){
-                return null;
-            }
-        return arrayListMeetingDTO;
+            return null;
+        }
 
+        return arrayListBuildingDTO;
     }
-
 }

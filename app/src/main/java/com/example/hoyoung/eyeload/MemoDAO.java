@@ -26,8 +26,10 @@ public class MemoDAO extends DAO{
     private ArrayList<MemoDTO> arrayListMemoDTO = new ArrayList<>();
     private MemoDTO memoDTOSelected = new MemoDTO();
 
+    //안드로이드->DB로 값을 삽입하기 위한 함수
     public boolean insert(MemoDTO dto) {
 
+        //매개변수로 받은 객체의 정보를 빼오는 부분
         String title = dto.getTitle();
         String x = String.valueOf(dto.getX());
         String y = String.valueOf(dto.getY());
@@ -44,9 +46,11 @@ public class MemoDAO extends DAO{
         String stringDate = sdFormat.format(date);
 
         try {
-            String link = "http://210.94.194.201/insertMemo.php";
+
+            String link = "http://210.94.194.201/insertMemo.php";//변수들을 보낼 link
             //String data  = URLEncoder.encode("memoKey", "UTF-8") + "=" + URLEncoder.encode(memoKey, "UTF-8");
             //memoKey는 자동으로 설정됨
+            //PHP를 통해 변수들을 Mapping하는 부분
             String data = URLEncoder.encode("title", "UTF-8") + "=" + URLEncoder.encode(title, "UTF-8");
             data += "&" + URLEncoder.encode("x", "UTF-8") + "=" + URLEncoder.encode(x, "UTF-8");
             data += "&" + URLEncoder.encode("y", "UTF-8") + "=" + URLEncoder.encode(y, "UTF-8");
@@ -64,7 +68,7 @@ public class MemoDAO extends DAO{
             conn.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 
-            wr.write(data);
+            wr.write(data);//Mapping된 데이터를 PHP를 통해 처리하는 부분
             wr.flush();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -72,12 +76,12 @@ public class MemoDAO extends DAO{
             StringBuilder sb = new StringBuilder();
             String line = null;
 
-            // Read Server Response
+            //서버로부터 반환된 값 읽어옴
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
                 break;
             }
-            if(sb.toString().equals("success"))
+            if(sb.toString().equals("success"))//성공적으로 불러왔을 시
                 return true;
             else
                 return false;
@@ -86,14 +90,14 @@ public class MemoDAO extends DAO{
         }
     }
 
-    //DB에서 MemoKey값이 key인 DTO를 삭제하는 함수
+    //key값을 이용하여 DB의 튜플을 삭제
     public boolean delete(int key){
 
         try{
             String memoKey =  String.valueOf(key);
 
-            String link="http://210.94.194.201/deleteMemo.php";
-            String data  = URLEncoder.encode("memoKey", "UTF-8") + "=" + URLEncoder.encode(memoKey, "UTF-8");
+            String link="http://210.94.194.201/deleteMemo.php";//key값을 보낼 link
+            String data  = URLEncoder.encode("memoKey", "UTF-8") + "=" + URLEncoder.encode(memoKey, "UTF-8");//PHP를 통해 변수들을 Mapping하는 부분
 
             URL url = new URL(link);
             URLConnection conn = url.openConnection();
@@ -101,7 +105,7 @@ public class MemoDAO extends DAO{
             conn.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 
-            wr.write( data );
+            wr.write( data );//Mapping된 데이터를 PHP를 통해 처리하는 부분
             wr.flush();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -109,13 +113,14 @@ public class MemoDAO extends DAO{
             StringBuilder sb = new StringBuilder();
             String line = null;
 
+            //서버로부터 반환된 값 읽어옴
             while((line = reader.readLine()) != null)
             {
                 sb.append(line);
                 break;
             }
 
-            if(sb.toString().equals("success"))
+            if(sb.toString().equals("success"))//성공적으로 삭제했을 시
                 return true;
             else
                 return false;
@@ -187,7 +192,7 @@ public class MemoDAO extends DAO{
         }
     }
 
-    public ArrayList<MemoDTO> selectAllMemo(String deviceID) {
+    public ArrayList<MemoDTO> selectAllPersonalMemo(String deviceID) {
         try {
 
             BufferedReader bufferedReader = null;
@@ -256,16 +261,23 @@ public class MemoDAO extends DAO{
 
     }
 
-    public ArrayList<MemoDTO> selectAll() {
+    public ArrayList<MemoDTO> selectAllMemo(String deviceID) {
         try {
 
             BufferedReader bufferedReader = null;
             //Device ID를 가져오는 부분
 
             String link = "http://210.94.194.201/selectAllMemo.php";
+            String data  = URLEncoder.encode("deviceID", "UTF-8") + "=" + URLEncoder.encode(deviceID, "UTF-8");
 
             URL url = new URL(link);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+            con.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+
+            wr.write( data );
+            wr.flush();
 
             StringBuilder sb = new StringBuilder();
 
