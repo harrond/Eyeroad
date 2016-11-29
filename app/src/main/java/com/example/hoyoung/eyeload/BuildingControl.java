@@ -14,6 +14,14 @@ public class BuildingControl {
 
     private static BuildingControl buildingControl = new BuildingControl();
 
+    public ArrayList<BuildingDTO> getBuildingList() {
+        return buildingList;
+    }
+
+    public BuildingDTO getBuildingDTOSelected() {
+        return buildingDTOSelected;
+    }
+
     //생성자
     private BuildingControl() {
 
