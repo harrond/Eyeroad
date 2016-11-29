@@ -26,6 +26,14 @@ public class MemoDAO extends DAO{
     private ArrayList<MemoDTO> arrayListMemoDTO;
     private MemoDTO memoDTOSelected;
 
+    public ArrayList<MemoDTO> getArrayListMemoDTO() {
+        return arrayListMemoDTO;
+    }
+
+    public MemoDTO getMemoDTOSelected() {
+        return memoDTOSelected;
+    }
+
     public MemoDAO()
     {
         arrayListMemoDTO = new ArrayList<>();
@@ -138,7 +146,7 @@ public class MemoDAO extends DAO{
     }
 
     //key값을 이용하여 선택된 튜플을 DB로부터 받아오는 함수
-    public MemoDTO select(int key)
+    public boolean select(int key)
     {
         String memoKey = String.valueOf(key);
 
@@ -192,16 +200,18 @@ public class MemoDAO extends DAO{
             selectedMemoDTO.setDeviceID(c.getString("deviceID"));
             selectedMemoDTO.setVisibility(Integer.valueOf(c.getString("visibility")));
 
-            return selectedMemoDTO;
+            memoDTOSelected = selectedMemoDTO;
 
+            return true;
 
         }catch (Exception e) {
-            return null;
+            return false;
         }
+
     }
 
     //deviceID를 이용하여 개인이 작성한 메모를 DB로부터 불러오는 함수
-    public ArrayList<MemoDTO> selectAllPersonal(String deviceID) {
+    public boolean selectAllPersonal(String deviceID) {
         try {
 
             BufferedReader bufferedReader = null;
@@ -264,17 +274,16 @@ public class MemoDAO extends DAO{
 
                 arrayListMemoDTO.add(memoDTO);//DTO를 MemoList에 추가
             }
+            return true;
 
         }catch(Exception e){
-            return null;
+            return false;
         }
-
-        return arrayListMemoDTO;//MemoList반환
 
     }
 
     //타인이 작성한 공개된 메모와 개인이 작성한 모든 메로를 DB로부터 불러오는 함수
-    public ArrayList<MemoDTO> selectAll() {
+    public boolean selectAll() {
         try {
 
             String deviceID;
@@ -341,10 +350,10 @@ public class MemoDAO extends DAO{
                 arrayListMemoDTO.add(memoDTO);//DTO를 MemoList에 추가
             }
         }catch(Exception e){
-            return null;
+            return false;
         }
 
-        return arrayListMemoDTO;//MemoList반환
+        return true;
 
     }
 

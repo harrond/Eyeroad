@@ -2,18 +2,11 @@ package com.example.hoyoung.eyeload;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
 /**
  * Created by Jin on 2016-11-5.
@@ -64,7 +57,7 @@ public class MemoInfoActivity extends AppCompatActivity implements View.OnClickL
         finish();
     }
 
-    class SelectMemo extends AsyncTask<Integer, Void, MemoDTO> {
+    class SelectMemo extends AsyncTask<Integer, Void, Boolean> {
         ProgressDialog loading;
 
         @Override
@@ -77,22 +70,22 @@ public class MemoInfoActivity extends AppCompatActivity implements View.OnClickL
         }
 
         @Override
-        protected void onPostExecute(MemoDTO memoDTO) {
-            super.onPostExecute(memoDTO);
+        protected void onPostExecute(Boolean flag) {
+            super.onPostExecute(flag);
             loading.dismiss();
 
-            if(memoDTO!=null) {
-                memo_name_text.setText(memoDTO.getTitle());
-                memo_content_text.setText(memoDTO.getContent());
-
-                //Toast.makeText(getApplicationContext(), "메모 검색 완료", Toast.LENGTH_LONG).show();
+            if(flag == true)
+            {
+                memo_name_text.setText(control.getMemoDTOSelected().getTitle());
+                memo_content_text.setText(control.getMemoDTOSelected().getContent());
             }
             else
                 Toast.makeText(getApplicationContext(), "메모 검색 실패!", Toast.LENGTH_LONG).show();
+
         }
 
         @Override
-        protected MemoDTO doInBackground(Integer... params) {
+        protected Boolean doInBackground(Integer... params) {
 
             return control.getMemo(params[0]);
 

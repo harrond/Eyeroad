@@ -31,8 +31,16 @@ public class MemoControl extends BaseAdapter {
     private MemoDTO memoDTOSelected = new MemoDTO();
     private MemoDAO memoDAO = new MemoDAO();
 
-
     private static MemoControl memoControl = new MemoControl();
+
+    public MemoDTO getMemoDTOSelected() {
+        return memoDTOSelected;
+    }
+
+    public MemoDAO getMemoDAO() {
+        return memoDAO;
+    }
+
     //싱글톤을 위한 생성자
     private MemoControl()
     {
@@ -94,17 +102,26 @@ public class MemoControl extends BaseAdapter {
     }
 
     //DB에서 MemoKey값이 key인 DTO를 불러오는 함수
-    public MemoDTO getMemo(int key)
+    public boolean getMemo(int key)
     {
-        memoDTOSelected = memoDAO.select(key);
-        return memoDTOSelected;
-        //Log.d("TEST","MemoControl getMemo " + memoDTOSelected.getTitle());
+        if(memoDAO.select(key)==true) {//정상적으로 DB에서 불러왔을 경우
+            memoDTOSelected = memoDAO.getMemoDTOSelected();
+            return true;
+        }
+        else
+            return false;
     }
 
     //DB에서 모든 DTO를 가져오는 함수
-    public void getAllMemo()
+    public boolean getAllMemo()
     {
-        memoList = memoDAO.selectAll();
+        if(memoDAO.selectAll() == true)//정상적으로 DB에서 불러왔을 경우
+        {
+            memoList = memoDAO.getArrayListMemoDTO();
+            return true;
+        }
+        else
+            return false;
     }
 
     //DB에서 DeviceID값이 같은 모든 DTO를 불러오는 함수
@@ -113,12 +130,16 @@ public class MemoControl extends BaseAdapter {
         try {
             String deviceID;
             deviceID = String.valueOf(Build.class.getField("SERIAL").get(null));
-            memoList = memoDAO.selectAllPersonal(deviceID);
 
-            return true;
-        }catch (Exception e)
-        {
-            e.getMessage();
+            if(memoDAO.selectAllPersonal(deviceID) == true)//정상적으로 DB에서 불러왔을 경우
+            {
+                memoList = memoDAO.getArrayListMemoDTO();//불러온 List를 Control의 List에 초기화
+                return true;
+            }
+            else
+                return false;
+        }
+        catch (Exception e) {
             return false;
         }
 
