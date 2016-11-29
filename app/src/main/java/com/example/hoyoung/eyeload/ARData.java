@@ -23,17 +23,16 @@ public abstract class ARData {
 
     public static final Location hardFix = new Location("ATL");
 
-    static {
-        hardFix.setLatitude(0);
-        hardFix.setLongitude(0);
-        hardFix.setAltitude(1);
+    static { //초기치 값 으로 신공학관 좌표찍어 놓음
+        hardFix.setLatitude(37.5583037);
+        hardFix.setLongitude(126.9984677);
+        hardFix.setAltitude(89.234482);
     }
 
     private static final Object radiusLock = new Object();
-    private static float radius = new Float(20);
-    private static String zoomLevel = new String();
-    private static final Object zoomProgressLock = new Object();
-    private static int zoomProgress = 0;
+    private static final Object buildingRadiusLock =new Object();
+    private static float radius = new Float(20); //반경
+    private static float buildingRadius = new Float(20);
     private static Location currentLocation = hardFix;
     private static Matrix rotationMatrix = new Matrix();
     private static final Object azimuthLock = new Object();
@@ -43,26 +42,8 @@ public abstract class ARData {
     private static final Object rollLock = new Object();
     private static float roll = 0;
 
-    public static void setZoomLevel(String zoomLevel) {
-        if (zoomLevel == null) throw new NullPointerException();
 
-        synchronized (ARData.zoomLevel) {
-            ARData.zoomLevel = zoomLevel;
-        }
-    }
-
-    public static void setZoomProgress(int zoomProgress) {
-        synchronized (ARData.zoomProgressLock) {
-            if (ARData.zoomProgress != zoomProgress) {
-                ARData.zoomProgress = zoomProgress;
-                if (dirty.compareAndSet(false, true)) {
-                    Log.v(TAG, "Setting DIRTY flag!");
-                    cache.clear();
-                }
-            }
-        }
-    }
-    public static void addPath(Collection<Marker> lines){
+    public static void addPath(Collection<Marker> lines){ //경로를 저장
         if (lines==null) throw new NullPointerException();
         if (lines.size()<=0) return;
         path=(List<Marker>)lines;
@@ -76,14 +57,24 @@ public abstract class ARData {
             ARData.radius = radius;
         }
     }
+    public static void setBuildingRadius(float radius) {
+        synchronized (ARData.buildingRadiusLock) {
+            ARData.buildingRadius = radius;
+        }
+    }
 
     public static float getRadius() {
         synchronized (ARData.radiusLock) {
             return ARData.radius;
         }
     }
+    public static float getBuildingRadius() {
+        synchronized (ARData.buildingRadiusLock) {
+            return ARData.buildingRadius;
+        }
+    }
 
-    public static void setCurrentLocation(Location currentLocation) {
+    public static void setCurrentLocation(Location currentLocation) { //현재 위치를 저장
         if (currentLocation == null) throw new NullPointerException();
 
         Log.d(TAG, "current location. location=" + currentLocation.toString());
@@ -111,7 +102,7 @@ public abstract class ARData {
         }
     }
 
-    public static List<Marker> getMarkers() {
+    public static List<Marker> getMarkers() { //경로를 제외한 마커들을 반환한다.
         if (dirty.compareAndSet(true, false)) {
             Log.v(TAG, "DIRTY flag found, resetting all marker heights to zero.");
             for (Marker ma : markerList.values()) {
@@ -135,7 +126,7 @@ public abstract class ARData {
             ARData.azimuth = azimuth;
         }
     }
-    public static List<Marker> getPath(){
+    public static List<Marker> getPath(){ //경로 마커들을 반환 한다.
         if(path == null) return null;
         for(Marker ma: path){
             ma.getLocation().get(locationArray);
@@ -175,22 +166,22 @@ public abstract class ARData {
         }
     }
 
-    private static final Comparator<Marker> comparator = new Comparator<Marker>() {
+    private static final Comparator<Marker> comparator = new Comparator<Marker>() { //거리로 비교
         public int compare(Marker arg0, Marker arg1) {
             return Double.compare(arg0.getDistance(), arg1.getDistance());
         }
     };
 
-    public static void addMarkers(Collection<Marker> markers) {
+    public static void addMarkers(Collection<Marker> markers) { //경로마커를 제외한 마커들을 추가한다.
         if (markers == null) throw new NullPointerException();
 
         if (markers.size() <= 0) return;
 
         Log.d(TAG, "New markers, updating markers. new markers=" + markers.toString());
         for (Marker marker : markers) {
-            if (!markerList.containsKey(marker.getName())) {
-                marker.calcRelativePosition(ARData.getCurrentLocation());
-                markerList.put(marker.getName(), marker);
+            if (!markerList.containsKey(marker.getTitle())) { //똑같은 마커가 들어있는지 확인
+                marker.calcRelativePosition(ARData.getCurrentLocation()); //마커의 위치를 현재 위치를 기준으로 다시계산
+                markerList.put(marker.getTitle(), marker); //List에 집어넣는다.
             }
         }
 
@@ -200,14 +191,14 @@ public abstract class ARData {
         }
     }
 
-    private static void onLocationChanged(Location location) {
+    private static void onLocationChanged(Location location) { //위치가 변경 되었을 경우
         Log.d(TAG, "New location, updating markers. location=" + location.toString());
-        for (Marker ma : markerList.values()) {
+        for (Marker ma : markerList.values()) {//바뀐 위치를 기준으로 마커들의 위치를 다시계산
             ma.calcRelativePosition(location);
         }
         if(path !=null) {
-            for (Marker marker : path) {
-                Log.d(TAG, "path marker chaingeifjji" + location.toString());
+            for (Marker marker : path) {//경로가 있다면 바뀐 위치를 기준으로 경로들의 위치를 다시계산
+                Log.d(TAG, "path marker change" + location.toString());
                 marker.calcRelativePosition(location);
             }
         }

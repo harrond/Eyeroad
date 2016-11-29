@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.location.Location;
@@ -19,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,23 +35,13 @@ import java.util.concurrent.TimeUnit;
 public class ARActivity extends SensorActivity implements OnTouchListener {
     private static final String TAG = "ARActivity";
     private static final DecimalFormat FORMAT = new DecimalFormat("#.##");
-    private static final String END_TEXT = FORMAT.format(ARActivity.MAX_ZOOM) + " km";
-    private static final int END_TEXT_COLOR = Color.WHITE;
 
     private static PowerManager.WakeLock wakeLock = null;
     private static CameraModel.CameraSurface camScreen = null;
-    private static TextView endLabel = null;
     private static ARView arView = null;
     private static List<Marker> pathmarkers=null;
 
     private static List<HashMap<String,Double>> path= null;
-    private static Bitmap bitmap = null;
-
-    public static final float MAX_ZOOM = 100; //in KM
-    public static final float ONE_PERCENT = MAX_ZOOM / 100f;
-    public static final float TEN_PERCENT = 10f * ONE_PERCENT;
-    public static final float TWENTY_PERCENT = 2f * TEN_PERCENT;
-    public static final float EIGHTY_PERCENTY = 4f * TWENTY_PERCENT;
 
     public static boolean useCollisionDetection = false;
     public static boolean visibleMarker = true;
@@ -78,29 +66,33 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         }*/
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);//위에 타이틀 바 안뜨게함
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        //0m~100km까지 나타내는 것을 100범위로 표현 1=40m 3=120m반경 50=2km 60=18km 75=30km 90=68km
+        ARData.setRadius(1f);
+        ARData.setBuildingRadius(3f);
+
         Intent intent=getIntent();
-        path=(List<HashMap<String,Double>>)intent.getSerializableExtra("path");
+        path=(List<HashMap<String,Double>>)intent.getSerializableExtra("path"); //길을 검색후 넘어온경우 경로를 가져온다.
         if(path!=null){
             createPathMarker();
         }
 
-        camScreen = new CameraModel.CameraSurface(this);
+        camScreen = new CameraModel.CameraSurface(this); //카메라 화면 셋팅
         setContentView(camScreen);
 
         arView = new ARView(this);
         arView.setOnTouchListener(this);
 
         ViewGroup.LayoutParams arLayout = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        addContentView(arView, arLayout);
+        addContentView(arView, arLayout); //카메라 화면위에 레이아웃을 덮는다.
         LayoutInflater inflator = getLayoutInflater();
         View over_view = (View) inflator.inflate(R.layout.over, null);
         addContentView(over_view, arLayout);
 
-        findViewById(R.id.btnMemo).setOnClickListener(
+        findViewById(R.id.btnMemo).setOnClickListener( //메모 만들기버튼를 클릭한 경우
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         Intent intent = new Intent(ARActivity.this, MakingMemoAcitivity.class);
@@ -114,7 +106,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
                     }
                 }
         );
-        findViewById(R.id.btnSearch).setOnClickListener(
+        findViewById(R.id.btnSearch).setOnClickListener( //길검색버튼을 클릭한 경우
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         Intent intent = new Intent(ARActivity.this, SearchPlaceActivity.class);
@@ -122,7 +114,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
                     }
                 }
         );
-        findViewById(R.id.btnOnOff).setOnClickListener(
+        findViewById(R.id.btnOnOff).setOnClickListener( //메모 마커 on, off
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         visibleMarker=!visibleMarker;
@@ -131,11 +123,11 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         );
 
 
-        updateDataOnZoom();
+        updateDataOnZoom(); //마커 다운로드
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "DimScreen");
 
-        bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
+        //bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
 
     }
 
@@ -161,49 +153,29 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     }
 
     @Override
-    public void onSensorChanged(SensorEvent evt) {
+    public void onSensorChanged(SensorEvent evt) { //센서 변경이 감지 된경우 핸드폰이 움직인 것이므로 화면을 다시 그린다.
         super.onSensorChanged(evt);
-
         if (evt.sensor.getType() == Sensor.TYPE_ACCELEROMETER ||
                 evt.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             arView.postInvalidate();
         }
     }
 
-    private static float calcZoomLevel() { //0m~100km까지 나타내는 것을 100범위로 표현
-        int myZoomLevel = 3;//120m반경
-        float out = 0;
 
-        float percent = 0;
-        if (myZoomLevel <= 25) {
-            percent = myZoomLevel / 25f;
-            out = ONE_PERCENT * percent;
-        } else if (myZoomLevel > 25 && myZoomLevel <= 50) {
-            percent = (myZoomLevel - 25f) / 25f;
-            out = ONE_PERCENT + (TEN_PERCENT * percent);
-        } else if (myZoomLevel > 50 && myZoomLevel <= 75) {
-            percent = (myZoomLevel - 50f) / 25f;
-            out = TEN_PERCENT + (TWENTY_PERCENT * percent);
-        } else {
-            percent = (myZoomLevel - 75f) / 25f;
-            out = TWENTY_PERCENT + (EIGHTY_PERCENTY * percent);
-        }
-        return out;
-
-    }
-    private void createPathMarker(){
+    private void createPathMarker(){ //받아온 경로를 마커로 만들어서 보관
         pathmarkers =new ArrayList<Marker>();
         int size = path.size();
         int i=0;
 
-        Bitmap a= BitmapFactory.decodeResource(this.getResources(),R.drawable.smaile );
+        Bitmap destination= BitmapFactory.decodeResource(this.getResources(),R.drawable.destination );
+        Bitmap point= BitmapFactory.decodeResource(this.getResources(),R.drawable.waypoint );
         for(i=0;i<path.size();i++){
             if(i==size-1){
-                Marker d=new Marker("Destination",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f, Color.BLUE,a,3);
+                Marker d=new Marker("Destination",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f,destination,3);
                 pathmarkers.add(d);
                 break;
             }
-            Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f, Color.BLUE,a,2);
+            Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f,point,2);
             pathmarkers.add(d);
         }
 
@@ -211,18 +183,15 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     }
 
     private void updateDataOnZoom() {
-        float zoomLevel = calcZoomLevel();
-        ARData.setRadius(zoomLevel);
-        ARData.setZoomLevel(FORMAT.format(zoomLevel));
-        ARData.setZoomProgress(3);
+
         Location last = ARData.getCurrentLocation();
         updateData(last.getLatitude(), last.getLongitude(), last.getAltitude());
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent me) {
+    public boolean onTouch(View v, MotionEvent me) { //화면이 터치 되었을 때
         for (Marker marker : ARData.getMarkers()) {
-            if (marker.handleClick(me.getX(), me.getY())) {
+            if (marker.handleClick(me.getX(), me.getY())) { //마커가 눌린 상태인지 검사
                 if (me.getAction() == MotionEvent.ACTION_UP) markerTouched(marker);
                 return true;
             }
@@ -231,17 +200,17 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location) { //사용자의 위치가 변경되었을 때
         super.onLocationChanged(location);
 
         updateData(location.getLatitude(), location.getLongitude(), location.getAltitude());
     }
 
-    private void markerTouched(Marker marker) {
-        marker.
+    private void markerTouched(Marker marker) { //마커가 터치된 경우
+
     }
 
-    private void updateData(final double lat, final double lon, final double alt) {
+    private void updateData(final double lat, final double lon, final double alt) { //다운로드함수를 스레드로 처리
         try {
             exeService.execute(
                     new Runnable() {
@@ -259,7 +228,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         }
     }
 
-    private static boolean download(double lat, double lon, double alt) {
+    private static boolean download(double lat, double lon, double alt) {  //db에서 다운로드
         //DB에서 다운하는 부분
         //Bitmap a= BitmapFactory.decodeResource(this.getResources(), );
        // ArrayList<MemoDTO>
@@ -267,10 +236,10 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
        // = memoControl.getAllMemo();
 
         List<Marker> markers = new ArrayList<Marker>();
-        Marker d = new Marker("Lab", 37.5583037, 126.9984677, 90, Color.RED, bitmap);
-        markers.add(d);
-        Marker c = new Marker("Testing", 37.4433899, 127.1340677, 70, Color.YELLOW, bitmap);
-        markers.add(c);
+        //Marker d = new Marker("Lab", 37.5583037, 126.9984677, 90, Color.RED, bitmap);
+       // markers.add(d);
+       // Marker c = new Marker("Testing", 37.4433899, 127.1340677, 70, Color.YELLOW, bitmap);
+       // markers.add(c);
 
         ARData.addMarkers(markers);
         return true;
