@@ -104,7 +104,7 @@ public class MemoControl extends BaseAdapter {
     //DB에서 모든 DTO를 가져오는 함수
     public void getAllMemo()
     {
-        memoList = memoDAO.selectAllMemo();
+        memoList = memoDAO.selectAll();
     }
 
     //DB에서 DeviceID값이 같은 모든 DTO를 불러오는 함수
@@ -113,7 +113,7 @@ public class MemoControl extends BaseAdapter {
         try {
             String deviceID;
             deviceID = String.valueOf(Build.class.getField("SERIAL").get(null));
-            memoList = memoDAO.selectAllPersonalMemo(deviceID);
+            memoList = memoDAO.selectAllPersonal(deviceID);
 
             return true;
         }catch (Exception e)

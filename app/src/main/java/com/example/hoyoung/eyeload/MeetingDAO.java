@@ -18,13 +18,18 @@ import java.util.ArrayList;
 
 public class MeetingDAO extends DAO{
 
-    //private static MeetingDAO meetingDAO = new MeetingDAO();
-    private ArrayList<MeetingDTO> arrayListMeetingDTO = new ArrayList<>();
-    private MeetingDTO meetingDTOSelected = new MeetingDTO();
+    private ArrayList<MeetingDTO> arrayListMeetingDTO;
+    private MeetingDTO meetingDTOSelected;
 
     public MeetingDTO getMeetingDTOSelected()
     {
         return meetingDTOSelected;
+    }
+
+    public MeetingDAO()
+    {
+        arrayListMeetingDTO = new ArrayList<>();
+        meetingDTOSelected = new MeetingDTO();
     }
 
     //안드로이드->DB로 값을 삽입하기 위한 함수
@@ -120,16 +125,18 @@ public class MeetingDAO extends DAO{
                 return false;
         }
         catch(Exception e){
-           return false;
+            return false;
         }
     }
 
+    //key값을 이용하여 선택된 튜플을 DB로부터 받아오는 함수
     public MeetingDTO select(int key)
     {
         try {
             String meetingKey = String.valueOf(key);
 
-            String link = "http://210.94.194.201/selectMeeting.php";
+            String link = "http://210.94.194.201/selectMeeting.php";//튜플에 대한 데이터를 받아올 link
+            //PHP를 통해 변수들을 Mapping하는 부분
             String data = URLEncoder.encode("meetingKey", "UTF-8") + "=" + URLEncoder.encode(meetingKey, "UTF-8");
 
 
@@ -138,7 +145,7 @@ public class MeetingDAO extends DAO{
             con.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 
-            wr.write(data);
+            wr.write(data);//Mapping된 데이터를 PHP를 통해 처리하는 부분
             wr.flush();
 
             StringBuilder sb = new StringBuilder();
@@ -146,16 +153,18 @@ public class MeetingDAO extends DAO{
             BufferedReader bufferedReader= new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String json;
-            while((json = bufferedReader.readLine())!= null){
+            while((json = bufferedReader.readLine())!= null){//서버로부터 반환된 값 읽어옴
                 sb.append(json+"\n");
             }
 
+            //PHP를 통해 받아온 변수들을 JSON을 이용하여 처리하는 부분
             String queryJson = sb.toString().trim();
             JSONObject jsonObj = new JSONObject(queryJson);
             JSONArray meetingInfo = jsonObj.getJSONArray("result");
 
             JSONObject c = meetingInfo.getJSONObject(0);
 
+            //JSON을 이용하여 DTO에 데이터 삽입하는 부분
             MeetingDTO selectedMeetingDTO=new MeetingDTO();
 
             selectedMeetingDTO.setTitle(c.getString("title"));
@@ -172,14 +181,14 @@ public class MeetingDAO extends DAO{
         }
     }
 
-
+    //개설된 모든 모임을 가져오는 함수
     public ArrayList<MeetingDTO> selectAll()
     {
 
         try {
 
             BufferedReader bufferedReader = null;
-            String link = "http://210.94.194.201/selectAllMeeting.php";
+            String link = "http://210.94.194.201/selectAllMeeting.php";//모든 메모에 대한 데이터를 받아올 link
 
             URL url = new URL(link);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -188,17 +197,20 @@ public class MeetingDAO extends DAO{
             bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String json;
-            while ((json = bufferedReader.readLine()) != null) {
+            while ((json = bufferedReader.readLine()) != null) {//서버로부터 반환된 값 읽어옴
                 sb.append(json + "\n");
             }
 
             String result = sb.toString().trim();
+
             arrayListMeetingDTO.clear();//업데이트를 위한 초기화부분
 
+            //PHP를 통해 받아온 변수들을 JSON을 이용하여 처리하는 부분
             JSONObject jsonObj = new JSONObject(result);
             JSONArray jsonArrayMeetingDTO = null;
             jsonArrayMeetingDTO = jsonObj.getJSONArray("result");
 
+            //JSON을 이용하여 DTO에 데이터 삽입하는 부분
             for (int i = 0; i < jsonArrayMeetingDTO.length(); i++) {
 
                 //MeetingDTO 객체를 생성
@@ -213,14 +225,13 @@ public class MeetingDAO extends DAO{
                 meetingDTO.setPublisher(c.getString("publisher"));
                 meetingDTO.setPassword(c.getString("password"));
 
-                //MeetingDTO 객체를 ArrayList에 삽입
-                arrayListMeetingDTO.add(meetingDTO);
+                arrayListMeetingDTO.add(meetingDTO);//MeetingDTO 객체를 ArrayList에 삽입
 
             }
         }catch(Exception e){
-                return null;
-            }
-        return arrayListMeetingDTO;
+            return null;
+        }
+        return arrayListMeetingDTO;//MeetingDTO의 객체가 담긴 List를 반환
 
     }
 

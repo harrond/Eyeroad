@@ -20,12 +20,14 @@ import java.util.ArrayList;
  */
 
 public class BuildingDAO extends DAO {
+
+    private ArrayList<BuildingDTO> arrayListBuildingDTO;
     private BuildingDTO buildingDTO;
 
     public BuildingDAO()
     {
+        arrayListBuildingDTO = new ArrayList<BuildingDTO>();
         buildingDTO = new BuildingDTO();
-
     }
 
     //안드로이드->DB로 값을 삽입하기 위한 함수
@@ -124,20 +126,22 @@ public class BuildingDAO extends DAO {
         }
     }
 
+    //key값을 이용하여 선택된 튜플을 DB로부터 받아오는 함수
     public boolean select(int key)
     {
         try {
 
-            String link = "http://210.94.194.201/selectBuilding.php";
-            String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(key), "UTF-8");
+            String link = "http://210.94.194.201/selectBuilding.php";//튜플에 대한 데이터를 받아올 link
 
+            //PHP를 통해 변수들을 Mapping하는 부분
+            String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(key), "UTF-8");
 
             URL url = new URL(link);
             URLConnection con = url.openConnection();
             con.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 
-            wr.write(data);
+            wr.write(data);//Mapping된 데이터를 PHP를 통해 처리하는 부분
             wr.flush();
 
             StringBuilder sb = new StringBuilder();
@@ -145,16 +149,18 @@ public class BuildingDAO extends DAO {
             BufferedReader bufferedReader= new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String json;
-            while((json = bufferedReader.readLine())!= null){
+            while((json = bufferedReader.readLine())!= null){//서버로부터 반환된 값 읽어옴
                 sb.append(json+"\n");
             }
 
+            //PHP를 통해 받아온 변수들을 JSON을 이용하여 처리하는 부분
             String queryJson = sb.toString().trim();
             JSONObject jsonObj = new JSONObject(queryJson);
-            JSONArray meetingInfo = jsonObj.getJSONArray("result");
+            JSONArray buildingInfo = jsonObj.getJSONArray("result");
 
-            JSONObject c = meetingInfo.getJSONObject(0);
+            JSONObject c = buildingInfo.getJSONObject(0);
 
+            //JSON을 이용하여 DTO에 데이터 삽입하는 부분
             BuildingDTO selectedBuildingDTO = new BuildingDTO();
 
             selectedBuildingDTO.setName(c.getString("name"));
@@ -172,14 +178,14 @@ public class BuildingDAO extends DAO {
 
     }
 
+    //모든 Building에 대한 정보를 DB로부터 받아오는 함수
     public ArrayList<BuildingDTO> selectAll()
     {
-        ArrayList<BuildingDTO> arrayListBuildingDTO = new ArrayList<BuildingDTO>();
 
         try {
 
             BufferedReader bufferedReader = null;
-            String link = "http://210.94.194.201/selectAllBuilding.php";
+            String link = "http://210.94.194.201/selectAllBuilding.php";//모든 빌딩에 대한 데이터를 받아올 link
 
             URL url = new URL(link);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -188,11 +194,12 @@ public class BuildingDAO extends DAO {
             bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
             String json;
-            while ((json = bufferedReader.readLine()) != null) {
+            while ((json = bufferedReader.readLine()) != null) {//서버로부터 반환된 값 읽어옴
                 sb.append(json + "\n");
             }
 
             String result = sb.toString().trim();
+
             arrayListBuildingDTO.clear();//업데이트를 위한 초기화부분
 
             JSONObject jsonObj = new JSONObject(result);
@@ -201,11 +208,11 @@ public class BuildingDAO extends DAO {
 
             for (int i = 0; i < jsonArrayBuildingDTO.length(); i++) {
 
-                //MeetingDTO 객체를 생성
+                //BuildingDTO 객체를 생성
                 BuildingDTO buildingDTO = new BuildingDTO();
 
                 JSONObject c = jsonArrayBuildingDTO.getJSONObject(i);
-                //MeetingDTO 객체에 정보 삽입
+                //BuildingDTO 객체에 정보 삽입
                 buildingDTO.setName(c.getString("name"));
                 buildingDTO.setX(Double.valueOf(c.getString("x")));
                 buildingDTO.setY(Double.valueOf(c.getString("y")));
@@ -213,14 +220,13 @@ public class BuildingDAO extends DAO {
                 buildingDTO.setInformation(c.getString("information"));
                 buildingDTO.setImage(c.getString("image"));
 
-                //MeetingDTO 객체를 ArrayList에 삽입
-                arrayListBuildingDTO.add(buildingDTO);
+                arrayListBuildingDTO.add(buildingDTO);//BuildingDTO 객체를 ArrayList에 삽입
 
             }
         }catch(Exception e){
             return null;
         }
 
-        return arrayListBuildingDTO;
+        return arrayListBuildingDTO;//BuildingDTO가 담긴 ArrayList를 반환
     }
 }
