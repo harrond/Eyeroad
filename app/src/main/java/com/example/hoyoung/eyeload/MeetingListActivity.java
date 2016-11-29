@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Created by Jin on 2016-10-8.
@@ -74,7 +75,7 @@ public class MeetingListActivity extends AppCompatActivity {
     }
 
     //모든 Meeting을 UI에 적용하기 위한 쓰레드
-    class SelectAllMeeting extends AsyncTask<Void, Void, Void> {
+    class SelectAllMeeting extends AsyncTask<Void, Void, Boolean> {
         ProgressDialog loading;
 
         @Override
@@ -91,23 +92,25 @@ public class MeetingListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void unused) {
-            super.onPostExecute(unused);
+        protected void onPostExecute(Boolean flag) {
+            super.onPostExecute(flag);
             loading.dismiss();
 
-            listView.setAdapter(control);
-
-            meetingClicked();
+            if(flag == true) {
+                listView.setAdapter(control);
+                meetingClicked();
+            }
+            else
+                Toast.makeText(getApplicationContext(), "모임 검색 실패!", Toast.LENGTH_LONG).show();
 
         }
 
 
         @Override
-        protected Void doInBackground(Void ... params) {
+        protected Boolean doInBackground(Void ... params) {
 
-            control.getAllMeeting();// DB에서 Meeting에 관한 모든 정보를 가져옴
+            return control.getAllMeeting();// DB에서 Meeting에 관한 모든 정보를 가져옴
 
-            return null;
         }
     }
 }

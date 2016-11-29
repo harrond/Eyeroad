@@ -96,7 +96,7 @@ public class MeetingInfoActivity extends AppCompatActivity implements View.OnCli
 
 
     //선택된 Meeting을 UI에 적용하기 위한 쓰레드
-    class SelectMeeting extends AsyncTask<Integer, Void, MeetingDTO> {
+    class SelectMeeting extends AsyncTask<Integer, Void, Boolean> {
         ProgressDialog loading;
 
         @Override
@@ -109,22 +109,22 @@ public class MeetingInfoActivity extends AppCompatActivity implements View.OnCli
         }
 
         @Override
-        protected void onPostExecute(MeetingDTO meetingDTO) {
-            super.onPostExecute(meetingDTO);
+        protected void onPostExecute(Boolean flag) {
+            super.onPostExecute(flag);
             loading.dismiss();
 
-            if(meetingDTO!=null) {
-                meeting_name_text.setText(meetingDTO.getTitle());
-                meeting_content_text.setText(meetingDTO.getMeetingInfo());
-                meeting_place_text.setText(meetingDTO.getPlaceName());
-                Toast.makeText(getApplicationContext(), "모임 검색 완료", Toast.LENGTH_LONG).show();
+            if(flag == true) {
+                meeting_name_text.setText(control.getMeetingDTOSelected().getTitle());
+                meeting_content_text.setText(control.getMeetingDTOSelected().getMeetingInfo());
+                meeting_place_text.setText(control.getMeetingDTOSelected().getPlaceName());
             }
             else
                 Toast.makeText(getApplicationContext(), "모임 검색 실패!", Toast.LENGTH_LONG).show();
+
         }
 
         @Override
-        protected MeetingDTO doInBackground(Integer... params) {
+        protected Boolean doInBackground(Integer... params) {
 
             return control.getMeeting(params[0]);
 

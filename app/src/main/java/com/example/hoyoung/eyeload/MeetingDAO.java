@@ -21,6 +21,10 @@ public class MeetingDAO extends DAO{
     private ArrayList<MeetingDTO> arrayListMeetingDTO;
     private MeetingDTO meetingDTOSelected;
 
+    public ArrayList<MeetingDTO> getArrayListMeetingDTO() {
+        return arrayListMeetingDTO;
+    }
+
     public MeetingDTO getMeetingDTOSelected()
     {
         return meetingDTOSelected;
@@ -130,7 +134,7 @@ public class MeetingDAO extends DAO{
     }
 
     //key값을 이용하여 선택된 튜플을 DB로부터 받아오는 함수
-    public MeetingDTO select(int key)
+    public boolean select(int key)
     {
         try {
             String meetingKey = String.valueOf(key);
@@ -173,16 +177,17 @@ public class MeetingDAO extends DAO{
             selectedMeetingDTO.setPublisher("publisher");
             selectedMeetingDTO.setPassword("password");
 
-            return selectedMeetingDTO;
+            meetingDTOSelected = selectedMeetingDTO;
 
-
+            return true;
         }catch (Exception e) {
-            return null;
+            return false;
         }
+
     }
 
     //개설된 모든 모임을 가져오는 함수
-    public ArrayList<MeetingDTO> selectAll()
+    public boolean selectAll()
     {
 
         try {
@@ -228,10 +233,10 @@ public class MeetingDAO extends DAO{
                 arrayListMeetingDTO.add(meetingDTO);//MeetingDTO 객체를 ArrayList에 삽입
 
             }
+            return true;
         }catch(Exception e){
-            return null;
+            return false;
         }
-        return arrayListMeetingDTO;//MeetingDTO의 객체가 담긴 List를 반환
 
     }
 

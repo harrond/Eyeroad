@@ -81,16 +81,34 @@ public class MeetingControl extends BaseAdapter {
     }
 
     //DB에서 MeetingKey값이 key인 DTO를 불러오는 함수
-    public MeetingDTO getMeeting(int key)
+    public boolean getMeeting(int key)
     {
-        meetingDTOSelected = meetingDAO.select(key);
+
+        if(meetingDAO.select(key) == true)
+        {
+            meetingDTOSelected = meetingDAO.getMeetingDTOSelected();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public MeetingDTO getMeetingDTOSelected() {
         return meetingDTOSelected;
     }
 
     //DB에서 모든 DTO를 가져오는 함수
-    public void getAllMeeting()
+    public boolean getAllMeeting()
     {
-        meetingList = meetingDAO.selectAll();
+        if(meetingDAO.selectAll()== true)
+        {
+            meetingDAO.getMeetingDTOSelected();
+            meetingList = meetingDAO.getArrayListMeetingDTO();
+            return true;
+
+        }
+        else
+            return false;
     }
 
     //매개변수의 값을 가진 DTO를 DB에 저장하는 함수

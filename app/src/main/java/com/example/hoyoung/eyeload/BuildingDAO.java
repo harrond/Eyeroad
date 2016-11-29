@@ -22,12 +22,21 @@ import java.util.ArrayList;
 public class BuildingDAO extends DAO {
 
     private ArrayList<BuildingDTO> arrayListBuildingDTO;
-    private BuildingDTO buildingDTO;
+    private BuildingDTO buildingDTOSelected;
+
+    public ArrayList<BuildingDTO> getArrayListBuildingDTO() {
+        return arrayListBuildingDTO;
+    }
+
+    public BuildingDTO getBuildingDTOSelected() {
+        return buildingDTOSelected;
+    }
 
     public BuildingDAO()
+
     {
         arrayListBuildingDTO = new ArrayList<BuildingDTO>();
-        buildingDTO = new BuildingDTO();
+        buildingDTOSelected = new BuildingDTO();
     }
 
     //안드로이드->DB로 값을 삽입하기 위한 함수
@@ -161,15 +170,15 @@ public class BuildingDAO extends DAO {
             JSONObject c = buildingInfo.getJSONObject(0);
 
             //JSON을 이용하여 DTO에 데이터 삽입하는 부분
-            BuildingDTO selectedBuildingDTO = new BuildingDTO();
+            BuildingDTO buildingDTO = new BuildingDTO();
 
-            selectedBuildingDTO.setName(c.getString("name"));
-            selectedBuildingDTO.setX(Double.valueOf(c.getString("x")));
-            selectedBuildingDTO.setY(Double.valueOf(c.getString("y")));
-            selectedBuildingDTO.setZ(Double.valueOf(c.getString("z")));
-            selectedBuildingDTO.setInformation("information");
+            buildingDTO.setName(c.getString("name"));
+            buildingDTO.setX(Double.valueOf(c.getString("x")));
+            buildingDTO.setY(Double.valueOf(c.getString("y")));
+            buildingDTO.setZ(Double.valueOf(c.getString("z")));
+            buildingDTO.setInformation("information");
 
-            buildingDTO = selectedBuildingDTO;
+            buildingDTOSelected = buildingDTO;
 
             return true;
         }catch (Exception e) {
@@ -179,7 +188,7 @@ public class BuildingDAO extends DAO {
     }
 
     //모든 Building에 대한 정보를 DB로부터 받아오는 함수
-    public ArrayList<BuildingDTO> selectAll()
+    public boolean selectAll()
     {
 
         try {
@@ -223,10 +232,10 @@ public class BuildingDAO extends DAO {
                 arrayListBuildingDTO.add(buildingDTO);//BuildingDTO 객체를 ArrayList에 삽입
 
             }
+            return true;
         }catch(Exception e){
-            return null;
+            return false;
         }
 
-        return arrayListBuildingDTO;//BuildingDTO가 담긴 ArrayList를 반환
     }
 }
