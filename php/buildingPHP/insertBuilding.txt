@@ -1,0 +1,38 @@
+<?php
+
+	$con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");
+	mysqli_set_charset($con,"utf8");
+
+	if (mysqli_connect_errno($con))  
+	{
+		echo "Failed to connect to MySQL: " . mysqli_connect_error();  
+}
+  
+	$name = $_POST['name'];
+	$x = $_POST['x'];
+	$y = $_POST['y'];
+	$z = $_POST['z'];
+	$information = $_POST['information'];
+	$image = $_POST['image'];
+
+	
+	$result = mysqli_query($con,"insert into Building (name,x, y, z, information, image) values ('$name','$x','$y','$z','$information','$image')");
+	#$result = mysqli_query($con,"insert into Building (name,x, y, z, information) values ('$name','$x','$y','$z','$information')");
+		
+	}
+
+	if($result)
+        {
+		if(mysqli_affected_rows($con)==1)
+			echo 'success';
+                else
+			echo 'failure';
+        }
+        else
+        {
+                echo 'failure';
+        }
+	
+
+	mysqli_close($con);  
+?>

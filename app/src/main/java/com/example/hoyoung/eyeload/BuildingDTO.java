@@ -11,16 +11,28 @@ public class BuildingDTO extends DTO {
 
     private int key;
     private String name;
-    private int x;
-    private int y;
-    private int z;
-    private String Information;
-    private Image image;
+    private double x;
+    private double y;
+    private double z;
+    private String information;
+    private String image;
 
+    //BuildingDTO의 생성자
+    public BuildingDTO()
+    {
+        name = null;
+        x = 0;
+        y = 0;
+        z = 0;
+        information = null;
+        image = null;
+    }
+    @Override
     public int getKey() {
         return key;
     }
 
+    @Override
     public void setKey(int key) {
         this.key = key;
     }
@@ -33,44 +45,43 @@ public class BuildingDTO extends DTO {
         this.name = name;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public int getZ() {
+    public double getZ() {
         return z;
     }
 
-    public void setZ(int z) {
+    public void setZ(double z) {
         this.z = z;
     }
 
     public String getInformation() {
-        return Information;
+        return information;
     }
 
     public void setInformation(String information) {
-        Information = information;
+        this.information = information;
     }
 
-    public Image getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Image image) {
+    public void setImage(String image) {
         this.image = image;
     }
-
 }

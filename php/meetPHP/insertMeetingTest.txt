@@ -24,10 +24,7 @@
 
 	if($result)
         {
-		if(mysqli_affected_rows($con)==1)
-			echo 'success';
-                else
-			echo 'failure';
+                echo 'success';
         }
         else
         {

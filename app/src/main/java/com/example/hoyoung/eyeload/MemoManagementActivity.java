@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Created by Jin on 2016-10-8.
@@ -38,8 +39,8 @@ public class MemoManagementActivity extends AppCompatActivity {
     public void setupListView()
     {
 
-        SelectAllMemo selectAllMemo = new SelectAllMemo();
-        selectAllMemo.execute();
+        SelectAllPersonalMemo selectAllPersonalMemo = new SelectAllPersonalMemo();
+        selectAllPersonalMemo.execute();
 
     }
 
@@ -60,7 +61,7 @@ public class MemoManagementActivity extends AppCompatActivity {
     }
 
 
-    class SelectAllMemo extends AsyncTask<Void, Void, Void> {
+    class SelectAllPersonalMemo extends AsyncTask<Void, Void, Boolean> {
         ProgressDialog loading;
 
         @Override
@@ -77,23 +78,25 @@ public class MemoManagementActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void unused) {
-            super.onPostExecute(unused);
+        protected void onPostExecute(Boolean flag) {
+            super.onPostExecute(flag);
             loading.dismiss();
 
-            listView.setAdapter(control);
-
-            memoClicked();
+            if(flag == true) {
+                listView.setAdapter(control);
+                memoClicked();
+            }
+            else
+                Toast.makeText(getApplicationContext(), "메모 검색 실패!", Toast.LENGTH_LONG).show();
 
         }
 
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
 
-            control.getAllPersonalMemo();
+            return control.getAllPersonalMemo();
 
-            return null;
         }
     }
 }

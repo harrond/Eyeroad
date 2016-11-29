@@ -1,23 +1,50 @@
 package com.example.hoyoung.eyeload;
+
+import java.util.ArrayList;
+
 /**
  * Created by Jin on 2016-10-8.
  */
 
 public class BuildingControl {
-    //DAO선언
-    private BuildingDTO buildingDTO;
 
-    public boolean getInfo(String name) {
-        boolean flag = false;
-        //DAO를 통해 가져와 BuildingInfoActivity에 반환하거나 xml에 표시해줘야함
+    private ArrayList<BuildingDTO> buildingList = new ArrayList<>();
+    private BuildingDTO buildingDTOSelected = new BuildingDTO();
+    private BuildingDAO buildingDAO = new BuildingDAO();
 
-        //DTO를 이상없이 가져온 경우
-        if (flag == true)
+    private static BuildingControl buildingControl = new BuildingControl();
+
+    public ArrayList<BuildingDTO> getBuildingList() {
+        return buildingList;
+    }
+
+    public BuildingDTO getBuildingDTOSelected() {
+        return buildingDTOSelected;
+    }
+
+    //생성자
+    private BuildingControl() {
+
+    }
+
+    //싱글톤 return
+    public static BuildingControl getInstance() {
+        return buildingControl;
+    }
+
+    public boolean getInfo(int key) {
+        return buildingDAO.select(key);
+    }
+
+    public boolean getAllBuilding(){
+
+        if(buildingDAO.selectAll()==true) {
+            buildingList = buildingDAO.getArrayListBuildingDTO();
             return true;
-
-            //DTO를 가져오지 못 한 경우
+        }
         else
             return false;
+
     }
 
 }
