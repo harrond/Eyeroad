@@ -1,0 +1,37 @@
+public void makeMarker2(double x1,double y1,double x2,double y2)
+	{
+		
+		double interval = 0.000085; // 8m ´ç ÇÏ³ª
+		double lean = (y2-y1)/(x2-x1);
+		double distance = Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+		int numOfMarker;
+		numOfMarker = (int) (distance / interval);
+		System.out.println("interval :" + interval);
+		System.out.println("lean :" + lean);
+		System.out.println("distance :" + distance);
+		System.out.println("numOfMarker :" + numOfMarker);
+		double formula1 = distance/Math.sqrt(1+lean*lean);
+		double formula2 = (lean*distance)/Math.sqrt(1+lean*lean);
+		
+		double smallX = (x1<x2)?x1:x2;
+		double bigX = (x1>x2)?x1:x2;
+		double smallY = (y1<y2)?y1:y2;
+		double bigY = (y1>y2)?y1:y2;
+		double changeX = bigX - smallX;
+		double changeY = bigY - smallY;
+
+		
+		double newX;
+		double newY;
+		int index=1;
+		
+		for(int i=1;i<=numOfMarker;i++)
+		{
+			newX = smallX + changeX*i/numOfMarker;
+			newY = smallY + changeY*i/numOfMarker;
+			
+			System.out.println("newX :" + newX);
+			System.out.println("newY :" + newY);
+			System.out.println("--------------------");
+		}
+	}

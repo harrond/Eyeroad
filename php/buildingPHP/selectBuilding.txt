@@ -1,0 +1,30 @@
+<?php  
+ 
+#function unistr_to_xnstr($str){//ÇÑ±Û±úÁü Ã³¸® ºÎºÐ
+#	return preg_replace('/\\\u([a-z0-9]{4})/i', "&#x\\1;", $str); 
+#} 
+ 
+	$con=mysqli_connect("127.0.0.1","root","6109","EyeRoad");  
+  
+	if (mysqli_connect_errno($con))  
+	{  
+		echo "Failed to connect to MySQL: " . mysqli_connect_error();  
+	}  
+ 
+	$id = $_POST['id'];
+ 
+	mysqli_set_charset($con,"utf8");  
+  
+	$res = mysqli_query($con,"select * from Building where id=$id");  
+   
+	$result = array();  
+   
+	while($row = mysqli_fetch_array($res)){  
+  		array_push($result, array('name'=>$row[0],'x'=>$row[1],'y'=>$row[2],'z'=>$row[3],'information'=>$row[4],'image'=>$row[5]));
+	}  
+
+	$json = json_encode(array("result"=>$result));  
+#	echo unistr_to_xnstr($json);
+	echo ($json);
+	mysqli_close($con);  
+?>
