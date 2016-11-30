@@ -3,7 +3,7 @@ package com.example.hoyoung.eyeload;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-public class PaintableIcon extends PaintableObject {
+public class PaintableIcon extends PaintableObject {//아이콘을 조절하는 클래스
     private Bitmap bitmap = null;
 
     public PaintableIcon(Bitmap bitmap, int width, int height) {

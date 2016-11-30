@@ -1,13 +1,19 @@
 package com.example.hoyoung.eyeload;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 /**
  * Created by Jin on 2016-11-5.
  */
@@ -17,20 +23,27 @@ public class MemoInfoActivity extends AppCompatActivity implements View.OnClickL
     private MemoControl control;
     private TextView memo_name_text;
     private TextView memo_content_text;
-
+    private ImageView memo_image;
+    private ImageView memo_icon;
+    private TextView memo_data_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memo_info);
-        findViewById(R.id.memoInfoDelete).setOnClickListener(this);
 
         memo_name_text=(TextView)findViewById(R.id.memoInfoName);
         memo_content_text=(TextView)findViewById(R.id.memoInfoContent);
+        memo_icon=(ImageView) findViewById(R.id.memoInfoIcon);
+        memo_image=(ImageView)findViewById(R.id.memoInfoImage);
+        memo_data_text=(TextView)findViewById(R.id.memoInfoDate);
         control = MemoControl.getInstance();
 
+        int flag = 0;
         Intent intent = new Intent(this.getIntent());
-        String memoKey = intent.getStringExtra("memoKey");
-        key = Integer.valueOf(memoKey);
+        key = intent.getIntExtra("memoKey",-1);
+        flag = (int)intent.getSerializableExtra("flag");
+        if(!(flag==1))
+            findViewById(R.id.memoInfoDelete).setOnClickListener(this);
 
         showMemoInfo();
 
@@ -78,10 +91,25 @@ public class MemoInfoActivity extends AppCompatActivity implements View.OnClickL
             {
                 memo_name_text.setText(control.getMemoDTOSelected().getTitle());
                 memo_content_text.setText(control.getMemoDTOSelected().getContent());
+                switch (control.getMemoDTOSelected().getIconId())
+                {
+                    case 1:
+                        memo_icon.setImageResource(R.drawable.ic_action_name);
+                        break;
+                    case 2:
+                        memo_icon.setImageResource(R.drawable.ic2_action_name);
+                        break;
+                    case 3:
+                        memo_icon.setImageResource(R.drawable.ic3_action_name);
+                        break;
+                }
+                memo_image.setImageBitmap((Bitmap)stringToBitmap(control.getMemoDTOSelected().getImage()));
+                //Toast.makeText(getApplicationContext(), "메모 검색 완료", Toast.LENGTH_LONG).show();
+                SimpleDateFormat transFormat=new SimpleDateFormat("yyyy-MM-dd");
+                memo_data_text.setText(transFormat.format(control.getMemoDTOSelected().getDate()));
             }
             else
                 Toast.makeText(getApplicationContext(), "메모 검색 실패!", Toast.LENGTH_LONG).show();
-
         }
 
         @Override
@@ -123,6 +151,10 @@ public class MemoInfoActivity extends AppCompatActivity implements View.OnClickL
 
         }
     }
-
+    public static Bitmap stringToBitmap(String bitmapString) {
+        byte[] bytes = Base64.decode(bitmapString, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return bitmap;
+    }
 
 }

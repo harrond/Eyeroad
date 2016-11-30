@@ -33,33 +33,32 @@ public class ARView extends View {
             List<Marker> path=ARData.getPath();
 
             cache.clear();
-            if(ARActivity.visibleMarker) {
-                for (Marker m : collection) {
+            if(ARActivity.visibleMarker) { //메모들 보기 여부
+                for (Marker m : collection) { //메모들 추가
                     m.update(canvas, 0, 0);
-                    if (m.isOnRadar()) cache.add(m);
+                    if (m.isOnRadar()) cache.add(m);//반경안에있으면 추가
                 }
             }
-            if(path!=null) {
-                for (Marker m : path) { //수정
+            if(path!=null) { //길을 받아왔는지
+                for (Marker m : path) {
                     m.update(canvas, 0, 0);
-                    if (m.isOnRadar()) cache.add(m);
+                    if (m.isOnRadar()) cache.add(m);//반경안에 있으면 추가
                 }
             }
             collection = cache;
 
-            if (ARActivity.useCollisionDetection) adjustForCollisions(canvas, collection);
+            if (ARActivity.useCollisionDetection) adjustForCollisions(canvas, collection); //겹쳐도 되는지
 
             ListIterator<Marker> iter = collection.listIterator(collection.size());
             while (iter.hasPrevious()) {
                 Marker marker = iter.previous();
                 marker.draw(canvas);
             }
-            // if (ARActivity.showRadar) radar.draw(canvas);
             drawing.set(false);
         }
     }
 
-    private static void adjustForCollisions(Canvas canvas, List<Marker> collection) {
+    private static void adjustForCollisions(Canvas canvas, List<Marker> collection) { //마커가 겹치는지를 검사해서 분리 시켜줌
         updated.clear();
         for (Marker marker1 : collection) {
             if (updated.contains(marker1) || !marker1.isInView()) continue;

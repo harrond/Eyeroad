@@ -63,12 +63,12 @@ public abstract class ARData {
         }
     }
 
-    public static float getRadius() {
+    public static float getRadius() { //길,메모 마커들의 반경
         synchronized (ARData.radiusLock) {
             return ARData.radius;
         }
     }
-    public static float getBuildingRadius() {
+    public static float getBuildingRadius() { //빌딩 마커의 반경
         synchronized (ARData.buildingRadiusLock) {
             return ARData.buildingRadius;
         }
@@ -81,10 +81,10 @@ public abstract class ARData {
         synchronized (currentLocation) {
             ARData.currentLocation = currentLocation;
         }
-        onLocationChanged(currentLocation);
+        onLocationChanged(currentLocation); //현재 위치가 변경되 었을 때 호출되서 마커들의 위치를 계산
     }
 
-    public static Location getCurrentLocation() {
+    public static Location getCurrentLocation() { //현재 위치를 반환한다.
         synchronized (ARData.currentLocation) {
             return ARData.currentLocation;
         }

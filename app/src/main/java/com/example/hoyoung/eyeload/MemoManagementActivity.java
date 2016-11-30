@@ -52,7 +52,8 @@ public class MemoManagementActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(MemoManagementActivity.this,MemoInfoActivity.class);
-                intent.putExtra("memoKey",String.valueOf(control.getMemoList().get(position).getKey()));
+                intent.putExtra("memoKey",control.getMemoList().get(position).getKey());
+                intent.putExtra("flag", 0);
                 startActivity(intent);
 
             }

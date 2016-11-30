@@ -6,7 +6,7 @@ import android.graphics.Color;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 
-public class PaintableBoxedText extends PaintableObject {
+public class PaintableBoxedText extends PaintableObject { //마커 밑에 표시되는 텍스트 박스 클래스
     private float width = 0, height = 0;
     private float areaWidth = 0, areaHeight = 0;
     private ArrayList<String> lineList = null;
@@ -52,7 +52,7 @@ public class PaintableBoxedText extends PaintableObject {
         }
     }
 
-    private void prepTxt(String txtInit, float fontSizeInit, float maxWidth) {
+    private void prepTxt(String txtInit, float fontSizeInit, float maxWidth) { //옆으로 계속 길어지면 안되므로 일정 길이 이후 잘라 밑으로 내려가게 하는 메소드
         if (txtInit == null) throw new NullPointerException();
 
         setFontSize(fontSizeInit);

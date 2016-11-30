@@ -1,6 +1,6 @@
 package com.example.hoyoung.eyeload;
 
-public class Matrix {
+public class Matrix { //실제에 대응되는 것을 표시하기 위한 매트릭스
     private static final Matrix tmp = new Matrix();
 
     private volatile float a1 = 0f, a2 = 0f, a3 = 0f;
@@ -221,10 +221,4 @@ public class Matrix {
         this.c3 = (tmp.c1 * n.a3) + (tmp.c2 * n.b3) + (tmp.c3 * n.c3);
     }
 
-    @Override
-    public synchronized String toString() {
-        return "(" + this.a1 + "," + this.a2 + "," + this.a3 + ")" +
-                " (" + this.b1 + "," + this.b2 + "," + this.b3 + ")" +
-                " (" + this.c1 + "," + this.c2 + "," + this.c3 + ")";
-    }
 }

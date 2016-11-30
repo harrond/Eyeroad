@@ -37,7 +37,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     private static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
     private static PowerManager.WakeLock wakeLock = null;
-    private static CameraModel.CameraSurface camScreen = null;
+    private static CameraSurface camScreen = null;
     private static ARView arView = null;
     private static List<Marker> pathmarkers=null;
 
@@ -49,30 +49,23 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     private static final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(1);
     private static final ThreadPoolExecutor exeService = new ThreadPoolExecutor(1, 1, 20, TimeUnit.SECONDS, queue);
 
+    private static Bitmap icon1;
+    private static Bitmap icon2;
+    private static Bitmap icon3;
+    private static Bitmap buildingIcon;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        /*
-        if(Build.VERSION.SDK_INT>=23) {  //버전확인
-            String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-            int i = 0;
-            int permissionCode = 0;
-            for (String permission : permissions) {
-                if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
 
-                } else {//권한 없음
-                    ActivityCompat.requestPermissions(this, permissions, permissionCode);
-                }
-            }
-        }*/
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);//위에 타이틀 바 안뜨게함
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //0m~100km까지 나타내는 것을 100범위로 표현 1=40m 3=120m반경 50=2km 60=18km 75=30km 90=68km
-        ARData.setRadius(1f);
-        ARData.setBuildingRadius(3f);
+        //반경 결정 0.04=40m 1=1km
+        ARData.setRadius(0.03f);
+        ARData.setBuildingRadius(0.1f);
 
         Intent intent=getIntent();
         path=(List<HashMap<String,Double>>)intent.getSerializableExtra("path"); //길을 검색후 넘어온경우 경로를 가져온다.
@@ -80,7 +73,13 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
             createPathMarker();
         }
 
-        camScreen = new CameraModel.CameraSurface(this); //카메라 화면 셋팅
+        icon1= BitmapFactory.decodeResource(this.getResources(),R.drawable.ic_action_name );
+        icon2= BitmapFactory.decodeResource(this.getResources(),R.drawable.ic2_action_name );
+        icon3= BitmapFactory.decodeResource(this.getResources(),R.drawable.ic3_action_name );
+        buildingIcon=BitmapFactory.decodeResource(this.getResources(),R.drawable.building);
+
+
+        camScreen = new CameraSurface(this); //카메라 화면 셋팅
         setContentView(camScreen);
 
         arView = new ARView(this);
@@ -103,6 +102,7 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
                         hashloc.put("z",loc.getAltitude());
                         intent.putExtra("cl",hashloc);
                         startActivity(intent);
+                        updateData();
                     }
                 }
         );
@@ -123,25 +123,23 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         );
 
 
-        updateDataOnZoom(); //마커 다운로드
+        updateData(); //메모와 건물 마커 다운로드
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "DimScreen");
 
-        //bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Location last = ARData.getCurrentLocation();
-        updateData(last.getLatitude(), last.getLongitude(), last.getAltitude());
+        updateData();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        updateData();
         wakeLock.acquire();
     }
 
@@ -171,22 +169,19 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         Bitmap point= BitmapFactory.decodeResource(this.getResources(),R.drawable.waypoint );
         for(i=0;i<path.size();i++){
             if(i==size-1){
-                Marker d=new Marker("Destination",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f,destination,3);
+                Marker d=new Marker("목적지",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele"),destination,3,0);
+                //Marker d=new Marker("목적지",path.get(i).get("lat") ,path.get(i).get("lon"),ARData.getCurrentLocation().getAltitude()-3,destination,3,0);
                 pathmarkers.add(d);
                 break;
             }
-            Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele")-5f,point,2);
+            Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),path.get(i).get("ele"),point,2,0);
+           // Marker d=new Marker(i+"",path.get(i).get("lat") ,path.get(i).get("lon"),ARData.getCurrentLocation().getAltitude()-3,point,2,0);
             pathmarkers.add(d);
         }
 
         ARData.addPath(pathmarkers);
     }
 
-    private void updateDataOnZoom() {
-
-        Location last = ARData.getCurrentLocation();
-        updateData(last.getLatitude(), last.getLongitude(), last.getAltitude());
-    }
 
     @Override
     public boolean onTouch(View v, MotionEvent me) { //화면이 터치 되었을 때
@@ -202,22 +197,31 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
     @Override
     public void onLocationChanged(Location location) { //사용자의 위치가 변경되었을 때
         super.onLocationChanged(location);
-
-        updateData(location.getLatitude(), location.getLongitude(), location.getAltitude());
+        updateData();
     }
 
     private void markerTouched(Marker marker) { //마커가 터치된 경우
+        int type = marker.getMarkerType();
+        if(type==0) { //마커가 메모인 경우
+            Intent intent = new Intent(ARActivity.this, MemoInfoActivity.class);
+            intent.putExtra("memoKey", marker.getKey());
+            intent.putExtra("flag", 1);
+            startActivity(intent);
+        }
+        else if(type ==1){ //
+            Intent intent = new Intent(ARActivity.this, BuildingInfoActivity.class);
+            intent.putExtra("buildingKey", marker.getKey());
+            startActivity(intent);
+        }
 
     }
 
-    private void updateData(final double lat, final double lon, final double alt) { //다운로드함수를 스레드로 처리
+    private void updateData() { //다운로드함수를 스레드로 처리
         try {
             exeService.execute(
                     new Runnable() {
-
                         public void run() {
-                            //   for (NetworkDataSource source : sources.values())
-                            download(lat, lon, alt);
+                            download();
                         }
                     }
             );
@@ -228,18 +232,36 @@ public class ARActivity extends SensorActivity implements OnTouchListener {
         }
     }
 
-    private static boolean download(double lat, double lon, double alt) {  //db에서 다운로드
-        //DB에서 다운하는 부분
-        //Bitmap a= BitmapFactory.decodeResource(this.getResources(), );
-       // ArrayList<MemoDTO>
+    private static boolean download() {  //db에서 다운로드
         MemoControl memoControl = MemoControl.getInstance();
-       // = memoControl.getAllMemo();
-
+        BuildingControl buildingControl = BuildingControl.getInstance();
+        memoControl.getAllMemo();
+        buildingControl.getAllBuilding();
+        List<MemoDTO> memoDTOs = memoControl.getMemoList();
+        List<BuildingDTO> buildingDTOs=buildingControl.getBuildingList();
         List<Marker> markers = new ArrayList<Marker>();
-        //Marker d = new Marker("Lab", 37.5583037, 126.9984677, 90, Color.RED, bitmap);
-       // markers.add(d);
-       // Marker c = new Marker("Testing", 37.4433899, 127.1340677, 70, Color.YELLOW, bitmap);
-       // markers.add(c);
+        for(MemoDTO memo :memoDTOs){
+            Bitmap icon;
+            switch(memo.getIconId()){ //id로 표시할 아이콘 선택
+                case 1:
+                    icon = icon1; break;
+                case 2:
+                    icon = icon2; break;
+                case 3:
+                    icon = icon3; break;
+                default:
+                    icon = null;
+            }
+            if (icon==null) continue;
+            //memo.getZ()
+            Marker ma = new Marker(memo.getTitle(),memo.getX(),memo.getY(),memo.getZ(),icon,0,memo.getKey());
+            markers.add(ma);
+        }
+
+        for(BuildingDTO building : buildingDTOs){
+            Marker ma = new Marker(building.getName(),building.getX(),building.getY(),building.getZ(),buildingIcon,1,building.getKey());
+            markers.add(ma);
+        }
 
         ARData.addMarkers(markers);
         return true;

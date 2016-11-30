@@ -174,7 +174,7 @@ public class MeetingDAO extends DAO{
             selectedMeetingDTO.setTitle(c.getString("title"));
             selectedMeetingDTO.setPlaceName(c.getString("placeName"));
             selectedMeetingDTO.setMeetingInfo(c.getString("meetingInfo"));
-            selectedMeetingDTO.setPublisher("publisher");
+            selectedMeetingDTO.setPublisher(c.getString("publisher"));
             selectedMeetingDTO.setPassword("password");
 
             meetingDTOSelected = selectedMeetingDTO;

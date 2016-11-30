@@ -1,6 +1,5 @@
 package com.example.hoyoung.eyeload;
 
-
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import java.util.List;
 
 /**
- * Created by YoungHoonKim on 2016-11-19.
+ * Created by YoungHoonKim on 11/14/16.
+ * SearchPlaceActivity의 RecylerView를 control하기위한 FinderResultAdapter
  */
 
 public class FindResultAdapter extends RecyclerView.Adapter<FindResultAdapter.DerpHolder> {
@@ -45,6 +46,7 @@ public class FindResultAdapter extends RecyclerView.Adapter<FindResultAdapter.De
     }
 
     @Override
+    //View에 들어갈 내용을 정함
     public void onBindViewHolder(DerpHolder holder, int position) {
         FindResultListItem item = listData.get(position);
         holder.title.setText(item.getName());
@@ -58,9 +60,9 @@ public class FindResultAdapter extends RecyclerView.Adapter<FindResultAdapter.De
 
     class DerpHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        //xml과 Java를 연동
         private TextView title;
         private TextView writer;
-        //private ImageView icon2;
         private View container;
 
         public DerpHolder(View itemView) {
@@ -77,8 +79,6 @@ public class FindResultAdapter extends RecyclerView.Adapter<FindResultAdapter.De
 
             if (v.getId() == R.id.cont_Ritem_root) {
                 itemClickCallback.onItemClick(getAdapterPosition());
-            } else {
-                //itemClickCallback.onSecondaryIconClick(getAdapterPosition());
             }
         }
     }

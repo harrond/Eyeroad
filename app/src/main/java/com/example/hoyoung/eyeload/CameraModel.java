@@ -1,6 +1,6 @@
 package com.example.hoyoung.eyeload;
 
-public class CameraModel {
+public class CameraModel { //마커들이 카메라에서 표시되는 위치를 저장하는 클래스
     private static final float[] tmp1 = new float[3];
     private static final float[] tmp2 = new float[3];
 

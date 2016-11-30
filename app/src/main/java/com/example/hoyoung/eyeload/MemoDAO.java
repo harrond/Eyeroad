@@ -1,6 +1,5 @@
 package com.example.hoyoung.eyeload;
 import android.os.Build;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -189,6 +188,7 @@ public class MemoDAO extends DAO{
             //JSON을 이용하여 DTO에 데이터 삽입하는 부분
             MemoDTO selectedMemoDTO=new MemoDTO();
 
+            selectedMemoDTO.setKey(Integer.valueOf(c.getString("memoKey")));
             selectedMemoDTO.setTitle(c.getString("title"));
             selectedMemoDTO.setX(Double.valueOf(c.getString("x")));
             selectedMemoDTO.setY(Double.valueOf(c.getString("y")));

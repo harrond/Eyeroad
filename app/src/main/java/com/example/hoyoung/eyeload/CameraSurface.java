@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Hoyoung on 2016-11-29.
  */
 
-public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback{
+public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback{ //증강뷰를 표현하기 위한 카메라 서페이스 뷰
     private static SurfaceHolder holder = null;
     private static Camera camera = null;
 

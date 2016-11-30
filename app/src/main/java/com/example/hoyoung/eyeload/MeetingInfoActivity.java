@@ -4,20 +4,12 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
 /**
  * Created by Jin on 2016-11-5.
@@ -30,6 +22,7 @@ public class MeetingInfoActivity extends AppCompatActivity implements View.OnCli
     private TextView meeting_name_text;
     private TextView meeting_content_text;
     private TextView meeting_place_text;
+    private TextView meeting_publisher_text;
     private AlertDialog.Builder alert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +34,11 @@ public class MeetingInfoActivity extends AppCompatActivity implements View.OnCli
         control = MeetingControl.getInstance(); // MeetingControl은 싱글톤
         setContentView(R.layout.activity_meeting_info);
         findViewById(R.id.meeting_delete).setOnClickListener(this);
-
+        findViewById(R.id.meeting_navi).setOnClickListener(this);
         meeting_name_text = (TextView)findViewById(R.id.meeting_name);
         meeting_content_text = (TextView)findViewById(R.id.meeting_content);
         meeting_place_text = (TextView)findViewById(R.id.meeting_place);
-
+        meeting_publisher_text = (TextView)findViewById(R.id.meeting_publisher);
         SelectMeeting selectMeeting = new SelectMeeting();
         selectMeeting.execute(key);
 
@@ -54,6 +47,12 @@ public class MeetingInfoActivity extends AppCompatActivity implements View.OnCli
 
     public void onClick(View v) { // 메뉴의 버튼 선택 시 activity 이동
         switch (v.getId()) {
+            case R.id.meeting_navi:
+                Intent intent = new Intent(MeetingInfoActivity.this, SearchPlaceActivity.class);
+                intent.putExtra("dest",control.getMeetingDTOSelected().getPlaceName() );
+                Toast.makeText(getApplicationContext(), "출발지를 입력하시오.", Toast.LENGTH_LONG).show();
+                startActivity(intent);
+                break;
             case R.id.meeting_delete:
                 deleteMeeting();
         }
@@ -117,6 +116,7 @@ public class MeetingInfoActivity extends AppCompatActivity implements View.OnCli
                 meeting_name_text.setText(control.getMeetingDTOSelected().getTitle());
                 meeting_content_text.setText(control.getMeetingDTOSelected().getMeetingInfo());
                 meeting_place_text.setText(control.getMeetingDTOSelected().getPlaceName());
+                meeting_publisher_text.setText(control.getMeetingDTOSelected().getPublisher());
             }
             else
                 Toast.makeText(getApplicationContext(), "모임 검색 실패!", Toast.LENGTH_LONG).show();

@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_find_result_list"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".SearchPlaceActivity">
+android:layout_width="match_parent"
+android:layout_height="match_parent" >
 
     <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/findresult_rec_list" />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/findresult_rec_list" />
+<com.google.android.gms.maps.MapView
+    android:id="@+id/mapView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/findresult_rec_list"/>
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:id="@+id/start"
+<ImageView
+    android:layout_width="200dp"
+    android:layout_height="50dp"
+    android:id="@+id/start"
 
-        android:layout_gravity="center_horizontal|bottom"
-        android:src="@drawable/pathbutton"
-        android:onClick="searchPath"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="114dp" />
+    android:layout_gravity="center_horizontal|bottom"
+    android:src="@drawable/gotoarbutton"
+    android:onClick="gotoARactivity"
+    android:layout_marginBottom="21dp"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

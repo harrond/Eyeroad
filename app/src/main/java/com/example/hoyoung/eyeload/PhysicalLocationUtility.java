@@ -2,7 +2,7 @@ package com.example.hoyoung.eyeload;
 
 import android.location.Location;
 
-public class PhysicalLocationUtility {
+public class PhysicalLocationUtility { //마커의 현재 위치를 가지고 있는 클래스
     private double latitude = 0.0;
     private double longitude = 0.0;
     private double altitude = 0.0;
@@ -50,7 +50,7 @@ public class PhysicalLocationUtility {
         return altitude;
     }
 
-    public static synchronized void convLocationToVector(Location org, PhysicalLocationUtility gp, Vector v) {
+    public static synchronized void convLocationToVector(Location org, PhysicalLocationUtility gp, Vector v) {//마커의 바뀐 위치와 현재 위치를 받아 벡터를 계산
         if (org == null || gp == null || v == null)
             throw new NullPointerException("Location, PhysicalLocationUtility, and Vector cannot be NULL.");
 

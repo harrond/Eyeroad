@@ -1,6 +1,5 @@
 package com.example.hoyoung.eyeload;
 
-import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,7 +7,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -157,7 +155,7 @@ public class BuildingDAO extends DAO {
 
             BufferedReader bufferedReader= new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-            String json;
+            String json = null;
             while((json = bufferedReader.readLine())!= null){//서버로부터 반환된 값 읽어옴
                 sb.append(json+"\n");
             }
@@ -176,7 +174,8 @@ public class BuildingDAO extends DAO {
             buildingDTO.setX(Double.valueOf(c.getString("x")));
             buildingDTO.setY(Double.valueOf(c.getString("y")));
             buildingDTO.setZ(Double.valueOf(c.getString("z")));
-            buildingDTO.setInformation("information");
+            buildingDTO.setInformation(c.getString("information"));
+            buildingDTO.setImage(c.getString("image"));
 
             buildingDTOSelected = buildingDTO;
 
@@ -222,6 +221,7 @@ public class BuildingDAO extends DAO {
 
                 JSONObject c = jsonArrayBuildingDTO.getJSONObject(i);
                 //BuildingDTO 객체에 정보 삽입
+                buildingDTO.setKey(Integer.valueOf(c.getString("id")));
                 buildingDTO.setName(c.getString("name"));
                 buildingDTO.setX(Double.valueOf(c.getString("x")));
                 buildingDTO.setY(Double.valueOf(c.getString("y")));

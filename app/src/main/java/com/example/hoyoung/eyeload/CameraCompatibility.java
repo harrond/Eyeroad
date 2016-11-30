@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class CameraCompatibility {
+public class CameraCompatibility { //화면 사이즈 얻어오는 클래스
     private static Method getSupportedPreviewSizes = null;
     private static Method mDefaultDisplay_getRotation = null;
 

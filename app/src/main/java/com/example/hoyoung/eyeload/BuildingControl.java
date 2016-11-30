@@ -33,7 +33,15 @@ public class BuildingControl {
     }
 
     public boolean getInfo(int key) {
-        return buildingDAO.select(key);
+        boolean flag = buildingDAO.select(key);
+        if(flag)
+        {
+            buildingDTOSelected = buildingDAO.getBuildingDTOSelected();
+            return true;
+        }
+        else
+            return false;
+
     }
 
     public boolean getAllBuilding(){

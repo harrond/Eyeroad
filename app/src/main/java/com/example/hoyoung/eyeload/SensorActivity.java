@@ -71,7 +71,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
 
             if (sensors.size() > 0) sensorMag = sensors.get(0);
             sensorMgr.registerListener(this, sensorGrav, SensorManager.SENSOR_DELAY_NORMAL);
-            sensorMgr.registerListener(this, sensorMag, SensorManager.SENSOR_DELAY_NORMAL);
+            sensorMgr.registerListener(this, sensorMag, SensorManager.SENSOR_DELAY_NORMAL); //센서를 게임 딜레이로 읽어드린다.
 
             locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             try {
@@ -82,8 +82,8 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
             try {
                 try {
                     try {
-                        Location gps = locationMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        Location network = locationMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        Location gps = locationMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER); //Gps로 구한 현재 위치
+                        Location network = locationMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER); //인터넷으로 구한 현재 위치
                         if (gps != null) {
                             onLocationChanged(gps);
                         } else if (network != null) {
@@ -159,7 +159,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
     public void onSensorChanged(SensorEvent evt) {
         if (!computing.compareAndSet(false, true)) return;
 
-        if (evt.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        if (evt.sensor.getType() == Sensor.TYPE_ACCELEROMETER) { //반응하는 센서에 따라서 filter를 거쳐서 움직인 값을 받아옴
             smooth = LowPassFilter.filter(0.5f, 1.0f, evt.values, grav);
             grav[0] = smooth[0];
             grav[1] = smooth[1];
@@ -202,7 +202,7 @@ public class SensorActivity extends Activity implements SensorEventListener, Loc
     }
 
     public void onLocationChanged(Location location) {
-        ARData.setCurrentLocation(location);
+        ARData.setCurrentLocation(location); //현재 위치를 업데이트 한다.
 
         gmf = new GeomagneticField((float) ARData.getCurrentLocation().getLatitude(), (float) ARData.getCurrentLocation().getLongitude(), (float) ARData.getCurrentLocation().getAltitude(), System.currentTimeMillis());
 

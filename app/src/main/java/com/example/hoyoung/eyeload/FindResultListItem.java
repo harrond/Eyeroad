@@ -1,8 +1,8 @@
 package com.example.hoyoung.eyeload;
 
-
 /**
- * Created by YoungHoonKim on 2016-11-19.
+ * Created by YoungHoonKim on 11/14/16.
+ * FindresultAdpater에서 입력을 받아 View에 출력시켜주는 내용을 한번에 다루기 위한 Class
  */
 
 public class FindResultListItem {

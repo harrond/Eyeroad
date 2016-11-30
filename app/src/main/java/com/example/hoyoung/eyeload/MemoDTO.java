@@ -1,7 +1,5 @@
 package com.example.hoyoung.eyeload;
 
-import android.media.Image;
-
 import java.util.Date;
 
 /**

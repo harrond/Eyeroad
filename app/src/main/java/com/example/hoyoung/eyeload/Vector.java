@@ -1,6 +1,6 @@
 package com.example.hoyoung.eyeload;
 
-public class Vector {
+public class Vector { //화면에 표시하기 위한 벡터
     private final float[] matrixArray = new float[9];
 
     private volatile float x = 0f;

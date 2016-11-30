@@ -2,7 +2,7 @@ package com.example.hoyoung.eyeload;
 
 import android.graphics.Canvas;
 
-public class PaintablePosition extends PaintableObject {
+public class PaintablePosition extends PaintableObject { //전달 받은 Paintable 객체로 폰 화면에 출력될 위치를 결정하는 클래스
     private float width = 0, height = 0;
     private float objX = 0, objY = 0, objRotation = 0, objScale = 0;
     private PaintableObject obj = null;
